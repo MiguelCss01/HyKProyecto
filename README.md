@@ -1,58 +1,75 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Plataforma Mayorista HyK - Configuración del Proyecto
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aca les dejo el paso a paso para que puedan instalar y levantar el proyecto de Laravel en sus compus sin problemas. Lean todo porque si saltean algo no les va a andar la base de datos.
 
-## About Laravel
+## Requisitos Previos
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+1. PHP y MySQL: Tienen que instalar XAMPP o Laragon. La version de PHP tiene que ser 8.2 o superior.
+2. Composer: Es el gestor de paquetes de PHP. Bajen el instalador .exe desde getcomposer.org y denle a siguiente a todo.
+3. Git: Para bajar el repo.
+4. MySQL Workbench: Para la base de datos.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Paso Importante: Configurar el php.ini
+Laravel necesita un driver para conectarse a MySQL que a veces viene apagado.
+1. Busquen el archivo php.ini en su compu (en XAMPP suele estar en C:\xampp\php\php.ini).
+2. Abranlo con el bloc de notas o VS Code.
+3. Aprieten Ctrl + F y busquen: pdo_mysql
+4. Si ven que la linea dice ";extension=pdo_mysql" (con punto y coma al principio), borrenle el punto y coma para que quede exactamente asi:
+   extension=pdo_mysql
+5. Guarden el archivo.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Instalacion Paso a Paso
 
-## Learning Laravel
+Abran la terminal en la carpeta donde quieran guardar el proyecto y sigan estos pasos:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
+1. Clonar el repositorio
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/MiguelCss01/HyKProyecto.git
+```
+Despues entren a la carpeta:
+```bash
+cd HyKProyecto
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+2. Instalar dependencias
+```bash
+composer install
+```
 
-## Contributing
+3. Configurar variables de entorno (.env)
+Adentro de la carpeta del proyecto hay un archivo que se llama ".env.example". Hagan una copia de ese archivo, peguenla ahi mismo y cambienle el nombre para que se llame solamente ".env".
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4. Generar la clave de la app
+Corran esto en la terminal:
+```bash
+php artisan key:generate
+```
 
-## Code of Conduct
+5. Crear la Base de Datos
+Abran MySQL Workbench y creen un nuevo schema (base de datos) vacio. Ponganle de nombre "hyk_db" (o el que quieran).
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+6. Conectar Laravel a la Base de Datos
+Abran su archivo .env nuevo en VS Code, busquen la parte que dice DB_CONNECTION y dejenla asi:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=hyk_db       <--- Pongan el nombre de la BD que crearon
+DB_USERNAME=root
+DB_PASSWORD=             <--- Si no tienen clave en MySQL, dejenlo vacio
+```
 
-## Security Vulnerabilities
+7. Correr las Migraciones (Tablas)
+Para que se creen todas las tablas automaticamente en su base de datos, corran:
+```bash
+php artisan migrate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+8. Levantar el servidor
+Para ver la pagina, corran:
+```bash
+php artisan serve
+```
+Y entren en su navegador a: http://localhost:8000
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Cualquier duda avisen. Si bajan cambios de github despues, acuerdense de tirar "php artisan migrate" por si alguien modifico las tablas.
