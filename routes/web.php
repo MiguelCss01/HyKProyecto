@@ -3,10 +3,13 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CatalogoController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/catalogo');
 });
+
+Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo');
 
 // Rutas de Autenticación
 Route::get('/acceso', [AuthController::class, 'showAcceso'])->name('login');

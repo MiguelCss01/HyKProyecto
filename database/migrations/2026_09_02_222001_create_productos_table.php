@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre_producto');
             $table->text('descripcion_producto')->nullable();
+            $table->text('imagen_url')->nullable();
             $table->integer('stock_actual')->default(0);
             $table->integer('stock_minimo')->default(0);
             $table->boolean('activo')->default(true);

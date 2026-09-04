@@ -28,6 +28,13 @@ class AuthController extends Controller
             'cuit' => 'nullable|required_if:customer_type,wholesale|regex:/^[0-9]{2}\-?[0-9]{8}\-?[0-9]{1}$/',
             'business_name' => 'nullable|required_if:customer_type,wholesale|string|max:255',
         ], [
+            'name.required' => 'El nombre y apellido son obligatorios.',
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Debes ingresar un correo electrónico válido.',
+            'email.unique' => 'Este correo electrónico ya está registrado.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'phone.required' => 'El teléfono es obligatorio.',
             'phone.regex' => 'El teléfono solo puede contener números, espacios y los símbolos + o -.',
             'dni.digits_between' => 'El DNI debe tener entre 7 y 8 números exactos (sin puntos).',
             'dni.required_if' => 'El DNI es obligatorio para clientes minoristas.',
@@ -60,6 +67,10 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+        ], [
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'Debes ingresar un correo electrónico válido.',
+            'password.required' => 'La contraseña es obligatoria.',
         ]);
 
         if (Auth::attempt($credentials, $request->has('remember'))) {
