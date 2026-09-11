@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Database\Factories\CarritoFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Carrito extends Model
 {
-    /** @use HasFactory<\Database\Factories\CarritoFactory> */
+    /** @use HasFactory<CarritoFactory> */
     use HasFactory;
 }
