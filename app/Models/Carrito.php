@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Database\Factories\CarritoFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Carrito extends Model
 {
+    /** @use HasFactory<CarritoFactory> */
     use HasFactory;
 
     protected $fillable = ['user_id', 'total'];

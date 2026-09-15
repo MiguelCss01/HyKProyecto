@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Database\Factories\DetalleFacturaFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class DetalleFactura extends Model
 {
-    /** @use HasFactory<\Database\Factories\DetalleFacturaFactory> */
+    /** @use HasFactory<DetalleFacturaFactory> */
     use HasFactory;
 }

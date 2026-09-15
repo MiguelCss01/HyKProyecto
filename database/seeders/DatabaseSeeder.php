@@ -15,11 +15,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
+        // Administrador de prueba
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Admin HyK',
+            'email' => 'admin@hyk.com',
+            'role' => 'admin',
+            'password' => bcrypt('password'),
+        ]);
+
+        // Cliente de prueba
+        User::factory()->create([
+            'name' => 'Cliente Test',
+            'email' => 'cliente@hyk.com',
+            'role' => 'cliente',
+            'tipo_cliente' => 'minorista',
+            'password' => bcrypt('password'),
+        ]);
+
+        // Correr el seeder del catálogo (Categorías, Productos, Presentaciones)
+        $this->call([
+            CatalogoSeeder::class,
         ]);
     }
 }
