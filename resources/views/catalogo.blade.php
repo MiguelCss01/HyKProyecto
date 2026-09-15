@@ -61,10 +61,22 @@
             <a href="{{ route('login') }}" class="text-sm font-bold text-primary hover:underline mr-4">Ingresar / Registrarse</a>
         @endauth
 
-        <button class="p-2 text-primary dark:text-primary-fixed-dim hover:bg-surface-container-low transition-colors rounded-full relative">
+        @php
+            $conteoCarrito = app(\App\Services\CartService::class)->conteoTotal();
+        @endphp
+
+        <a href="{{ route('carrito.index') }}" class="p-2 text-primary dark:text-primary-fixed-dim hover:bg-surface-container-low transition-colors rounded-full relative flex items-center justify-center" title="Ver Carrito de Compras">
             <span class="material-symbols-outlined">shopping_cart</span>
-            <span class="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-error text-on-error text-[10px] font-bold leading-none">0</span>
-        </button>
+            @if($conteoCarrito > 0)
+                <span class="absolute top-0 right-0 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-error text-on-error text-[10px] font-bold leading-none">
+                    {{ $conteoCarrito }}
+                </span>
+            @else
+                <span class="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-surface-variant text-on-surface-variant text-[10px] font-bold leading-none">
+                    0
+                </span>
+            @endif
+        </a>
     </div>
 </header>
 
@@ -93,6 +105,26 @@
 
 <!-- Main Content Canvas -->
 <main class="md:ml-64 flex-1 h-full w-full max-w-[1440px] mx-auto pb-20 md:pb-0">
+    <!-- Alertas Flash -->
+    @if(session('success'))
+        <div class="mx-margin-mobile md:mx-lg mt-4 p-4 bg-green-50 border border-green-300 text-green-800 rounded-lg flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-green-600">check_circle</span>
+                <span class="text-sm font-medium">{{ session('success') }}</span>
+            </div>
+            <a href="{{ route('carrito.index') }}" class="text-xs font-bold uppercase tracking-wider text-green-800 underline hover:text-green-900 ml-4">
+                Ver carrito &rarr;
+            </a>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="mx-margin-mobile md:mx-lg mt-4 p-4 bg-red-50 border border-red-300 text-red-800 rounded-lg flex items-center gap-2 shadow-sm">
+            <span class="material-symbols-outlined text-red-600">error</span>
+            <span class="text-sm font-medium">{{ session('error') }}</span>
+        </div>
+    @endif
+
     <!-- Mobile Search Bar -->
     <div class="md:hidden px-margin-mobile py-sm bg-surface sticky top-16 z-30 shadow-sm border-b border-outline-variant">
         <div class="relative w-full">
@@ -150,21 +182,48 @@
                             @endif
                         </div>
                         
-                        <div class="mt-4 flex items-center gap-2">
-                            <div class="flex items-center border border-outline-variant rounded bg-surface h-10 w-24">
-                                <button class="px-2 text-on-surface-variant hover:text-primary transition-colors flex-1 flex items-center justify-center">
-                                    <span class="material-symbols-outlined">remove</span>
-                                </button>
-                                <input class="w-8 text-center text-sm font-bold text-on-surface bg-transparent border-none p-0 focus:ring-0" min="1" type="number" value="1"/>
-                                <button class="px-2 text-on-surface-variant hover:text-primary transition-colors flex-1 flex items-center justify-center">
-                                    <span class="material-symbols-outlined">add</span>
-                                </button>
+                        <form action="{{ route('carrito.agregar') }}" method="POST" class="mt-4 flex flex-col gap-2">
+                            @csrf
+                            @if($prod->presentaciones->count() > 1)
+                                <div class="w-full">
+                                    <label class="text-[11px] font-bold text-on-surface-variant block mb-1">Presentación:</label>
+                                    <select name="presentacion_id" class="w-full text-xs font-semibold py-1.5 px-2 bg-surface-bright border border-outline-variant rounded focus:outline-none focus:border-primary">
+                                        @foreach($prod->presentaciones as $pres)
+                                            @php
+                                                $precioPres = $isMayorista ? $pres->precio_mayorista : $pres->precio_minorista;
+                                            @endphp
+                                            <option value="{{ $pres->id }}" {{ ($isMayorista && $pres->tipo != 'unidad') ? 'selected' : '' }}>
+                                                {{ ucfirst($pres->tipo) }} (x{{ $pres->cantidad_contenida }}) - ${{ number_format($precioPres, 0, ',', '.') }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @elseif($prod->presentaciones->isNotEmpty())
+                                <input type="hidden" name="presentacion_id" value="{{ $prod->presentaciones->first()->id }}">
+                            @endif
+
+                            <div class="flex items-center gap-2">
+                                <div class="flex items-center border border-outline-variant rounded bg-surface h-10 w-24">
+                                    <button type="button" onclick="const input = this.nextElementSibling; if(parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;" class="px-2 text-on-surface-variant hover:text-primary transition-colors flex-1 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-sm">remove</span>
+                                    </button>
+                                    <input name="cantidad" class="w-8 text-center text-sm font-bold text-on-surface bg-transparent border-none p-0 focus:ring-0" min="1" max="999" type="number" value="1"/>
+                                    <button type="button" onclick="const input = this.previousElementSibling; input.value = parseInt(input.value) + 1;" class="px-2 text-on-surface-variant hover:text-primary transition-colors flex-1 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-sm">add</span>
+                                    </button>
+                                </div>
+                                @if($prod->stock_actual > 0)
+                                    <button type="submit" class="flex-1 bg-secondary text-on-secondary h-10 rounded text-sm font-bold hover:bg-[#00531a] transition-colors flex items-center justify-center gap-1 shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                                        Agregar
+                                    </button>
+                                @else
+                                    <button type="button" disabled class="flex-1 bg-gray-200 text-gray-500 h-10 rounded text-sm font-bold cursor-not-allowed flex items-center justify-center gap-1">
+                                        Agotado
+                                    </button>
+                                @endif
                             </div>
-                            <button class="flex-1 bg-secondary text-on-secondary h-10 rounded text-sm font-bold hover:bg-[#00531a] transition-colors flex items-center justify-center gap-1">
-                                <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
-                                Agregar
-                            </button>
-                        </div>
+                        </form>
                     </div>
                 </article>
             @endforeach
@@ -174,13 +233,22 @@
 
 <!-- BottomNavBar (Mobile Only) -->
 <nav class="fixed bottom-0 w-full z-50 flex justify-around items-center py-2 px-4 md:hidden bg-surface-container-lowest dark:bg-inverse-surface shadow-[0_-4px_12px_rgba(0,0,0,0.1)] border-t border-outline-variant">
-    <a class="flex flex-col items-center justify-center text-primary px-4 py-1" href="#">
+    <a class="flex flex-col items-center justify-center text-primary px-4 py-1" href="{{ route('catalogo') }}">
         <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
         <span class="text-[10px] mt-0.5 font-bold">Inicio</span>
     </a>
     <a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
         <span class="material-symbols-outlined">category</span>
         <span class="text-[10px] mt-0.5">Categorías</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 relative" href="{{ route('carrito.index') }}">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span class="text-[10px] mt-0.5 font-bold">Carrito</span>
+        @if($conteoCarrito > 0)
+            <span class="absolute top-0 right-3 bg-error text-on-error text-[9px] font-bold rounded-full h-3.5 min-w-3.5 px-1 flex items-center justify-center">
+                {{ $conteoCarrito }}
+            </span>
+        @endif
     </a>
     <a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
         <span class="material-symbols-outlined">receipt_long</span>

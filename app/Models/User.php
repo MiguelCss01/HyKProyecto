@@ -29,4 +29,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Carrito de compras asociado al usuario.
+     */
+    public function carrito()
+    {
+        return $this->hasOne(Carrito::class);
+    }
 }

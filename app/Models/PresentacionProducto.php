@@ -17,4 +17,9 @@ class PresentacionProducto extends Model
     {
         return $this->belongsTo(Producto::class);
     }
+
+    public function itemsCarrito()
+    {
+        return $this->hasMany(ItemCarrito::class, 'presentacion_producto_id');
+    }
 }

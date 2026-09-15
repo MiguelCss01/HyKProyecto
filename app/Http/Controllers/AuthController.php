@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -74,7 +75,12 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials, $request->has('remember'))) {
+            /** @var User $user */
+            $user = Auth::user();
+            app(CartService::class)->sincronizarConBD($user);
+
             $request->session()->regenerate();
+
             return redirect()->intended('/');
         }
 
