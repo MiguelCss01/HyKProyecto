@@ -87,19 +87,30 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="ml-64 flex-1 h-full flex flex-col overflow-hidden bg-background">
+    <main class="ml-64 flex-1 h-full flex flex-col overflow-hidden bg-background relative">
         @if (session('success'))
-            <div class="m-4 bg-[#d4edda] border border-[#c3e6cb] text-[#155724] px-4 py-3 rounded z-50 absolute top-0 right-0">
+            <div class="alert-auto-dismiss m-4 bg-[#d4edda] border border-[#c3e6cb] text-[#155724] px-4 py-3 rounded z-50 absolute top-0 right-0 shadow-lg transition-opacity duration-500">
                 {{ session('success') }}
             </div>
         @endif
         @if (session('error'))
-            <div class="m-4 bg-[#f8d7da] border border-[#f5c6cb] text-[#721c24] px-4 py-3 rounded z-50 absolute top-0 right-0">
+            <div class="alert-auto-dismiss m-4 bg-[#f8d7da] border border-[#f5c6cb] text-[#721c24] px-4 py-3 rounded z-50 absolute top-0 right-0 shadow-lg transition-opacity duration-500">
                 {{ session('error') }}
             </div>
         @endif
 
         @yield('content')
     </main>
+
+    <script>
+        // Ocultar alertas automáticamente después de 3 segundos
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert-auto-dismiss');
+            alerts.forEach(alert => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 3000);
+    </script>
 </body>
 </html>

@@ -29,5 +29,5 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Rutas de Administración
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
-    Route::get('/productos', [ProductoController::class, 'index'])->name('productos.index');
+    Route::resource('productos', ProductoController::class);
 });

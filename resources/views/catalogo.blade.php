@@ -172,12 +172,12 @@
                                     <span class="bg-surface-variant text-on-surface-variant px-1.5 py-0.5 rounded text-[10px] font-bold uppercase">{{ $presMayorista->tipo }} x{{ $presMayorista->cantidad_contenida }}</span>
                                 </div>
                                 <div class="font-bold text-xl text-primary">
-                                    ${{ number_format($isMayorista ? $presMayorista->precio_mayorista : $presMayorista->precio_minorista, 0, ',', '.') }} 
+                                    $<span class="price-val">{{ number_format($isMayorista ? $presMayorista->precio_mayorista : $presMayorista->precio_minorista, 0, ',', '.') }}</span>
                                     <span class="text-xs font-normal text-on-surface-variant">/total</span>
                                 </div>
                             @else
                                 <div class="font-bold text-xl text-primary mt-4">
-                                    ${{ number_format($presMinorista->precio_minorista ?? 0, 0, ',', '.') }}
+                                    $<span class="price-val">{{ number_format($presMinorista->precio_minorista ?? 0, 0, ',', '.') }}</span>
                                 </div>
                             @endif
                         </div>
@@ -187,12 +187,12 @@
                             @if($prod->presentaciones->count() > 1)
                                 <div class="w-full">
                                     <label class="text-[11px] font-bold text-on-surface-variant block mb-1">Presentación:</label>
-                                    <select name="presentacion_id" class="w-full text-xs font-semibold py-1.5 px-2 bg-surface-bright border border-outline-variant rounded focus:outline-none focus:border-primary">
+                                    <select name="presentacion_id" onchange="this.closest('article').querySelector('.price-val').innerText = this.options[this.selectedIndex].dataset.precio" class="w-full text-xs font-semibold py-1.5 px-2 bg-surface-bright border border-outline-variant rounded focus:outline-none focus:border-primary">
                                         @foreach($prod->presentaciones as $pres)
                                             @php
                                                 $precioPres = $isMayorista ? $pres->precio_mayorista : $pres->precio_minorista;
                                             @endphp
-                                            <option value="{{ $pres->id }}" {{ ($isMayorista && $pres->tipo != 'unidad') ? 'selected' : '' }}>
+                                            <option value="{{ $pres->id }}" data-precio="{{ number_format($precioPres, 0, ',', '.') }}" {{ ($isMayorista && $pres->tipo != 'unidad') ? 'selected' : '' }}>
                                                 {{ ucfirst($pres->tipo) }} (x{{ $pres->cantidad_contenida }}) - ${{ number_format($precioPres, 0, ',', '.') }}
                                             </option>
                                         @endforeach

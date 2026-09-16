@@ -14,10 +14,10 @@
                 <span class="material-symbols-outlined text-[20px]" data-icon="download">download</span>
                 Exportar
             </button>
-            <button class="flex items-center gap-2 bg-primary-container text-on-primary-container font-label-md py-2 px-4 rounded-lg hover:opacity-90 transition-opacity shadow-sm">
+            <a href="{{ route('admin.productos.create') }}" class="flex items-center gap-2 bg-primary-container text-on-primary-container font-label-md py-2 px-4 rounded-lg hover:opacity-90 transition-opacity shadow-sm">
                 <span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
                 Nuevo Producto
-            </button>
+            </a>
         </div>
     </div>
     
@@ -74,15 +74,9 @@
                     </td>
                     <td class="py-4 px-6">
                         <div class="flex items-center gap-2 bg-surface-bright border border-outline-variant rounded-lg p-1 w-fit">
-                            <button aria-label="Decrease stock" class="w-8 h-8 flex items-center justify-center rounded text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" {{ $producto->stock_actual <= 0 ? 'disabled' : '' }}>
-                                <span class="material-symbols-outlined text-[18px]" data-icon="remove">remove</span>
-                            </button>
                             <span class="font-price-display text-price-display {{ $producto->stock_actual <= $producto->stock_minimo ? 'text-error' : 'text-on-surface' }} w-12 text-center">
                                 {{ $producto->stock_actual }}
                             </span>
-                            <button aria-label="Increase stock" class="w-8 h-8 flex items-center justify-center rounded text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors">
-                                <span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
-                            </button>
                         </div>
                     </td>
                     <td class="py-4 px-6">
@@ -104,10 +98,17 @@
                             </span>
                         @endif
                     </td>
-                    <td class="py-4 px-6 text-right">
-                        <button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed/20 rounded-full transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+                    <td class="py-4 px-6 text-right flex justify-end gap-2">
+                        <a href="{{ route('admin.productos.edit', $producto->id) }}" class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-fixed/20 rounded-full transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100" title="Editar">
                             <span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
-                        </button>
+                        </a>
+                        <form action="{{ route('admin.productos.destroy', $producto->id) }}" method="POST" class="inline" onsubmit="return confirm('¿Seguro que deseas eliminar este producto?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="p-2 text-on-surface-variant hover:text-error hover:bg-error-container/50 rounded-full transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100" title="Eliminar">
+                                <span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 @empty

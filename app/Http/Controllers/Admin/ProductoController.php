@@ -13,4 +13,71 @@ class ProductoController extends Controller
 
         return view('admin.productos.index', compact('productos'));
     }
+
+    public function create()
+    {
+        $categorias = \App\Models\Categoria::all();
+        return view('admin.productos.create', compact('categorias'));
+    }
+
+    public function store(\App\Http\Requests\SaveProductoRequest $request)
+    {
+        // 1. Usar una transacción para asegurar que se guarde el producto Y sus presentaciones juntos
+        \Illuminate\Support\Facades\DB::transaction(function () use ($request) {
+            // Guardar datos básicos
+            $producto = Producto::create([
+                'nombre_producto' => $request->nombre_producto,
+                'descripcion_producto' => $request->descripcion_producto,
+                'categoria_id' => $request->categoria_id,
+                'stock_actual' => $request->stock_actual,
+                'stock_minimo' => $request->stock_minimo,
+                'activo' => $request->has('activo'),
+            ]);
+
+            // Guardar presentaciones usando la relación
+            foreach ($request->presentaciones as $pres) {
+                $producto->presentaciones()->create($pres);
+            }
+        });
+
+        return redirect()->route('admin.productos.index')->with('success', 'Producto creado exitosamente.');
+    }
+
+    public function edit(Producto $producto)
+    {
+        // Cargar el producto con sus presentaciones
+        $producto->load('presentaciones');
+        $categorias = \App\Models\Categoria::all();
+        
+        return view('admin.productos.edit', compact('producto', 'categorias'));
+    }
+
+    public function update(\App\Http\Requests\SaveProductoRequest $request, Producto $producto)
+    {
+        \Illuminate\Support\Facades\DB::transaction(function () use ($request, $producto) {
+            $producto->update([
+                'nombre_producto' => $request->nombre_producto,
+                'descripcion_producto' => $request->descripcion_producto,
+                'categoria_id' => $request->categoria_id,
+                'stock_actual' => $request->stock_actual,
+                'stock_minimo' => $request->stock_minimo,
+                'activo' => $request->has('activo'),
+            ]);
+
+            // Borrar presentaciones viejas y recrearlas (enfoque más simple)
+            $producto->presentaciones()->delete();
+            
+            foreach ($request->presentaciones as $pres) {
+                $producto->presentaciones()->create($pres);
+            }
+        });
+
+        return redirect()->route('admin.productos.index')->with('success', 'Producto actualizado.');
+    }
+
+    public function destroy(Producto $producto)
+    {
+        $producto->delete();
+        return redirect()->route('admin.productos.index')->with('success', 'Producto eliminado.');
+    }
 }
