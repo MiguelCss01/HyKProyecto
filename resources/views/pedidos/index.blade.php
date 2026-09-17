@@ -70,10 +70,7 @@
             <span class="hidden md:inline text-sm font-bold text-on-surface-variant">
                 Hola, {{ auth()->user()->name }}
             </span>
-            <form action="{{ route('logout') }}" method="POST" class="inline">
-                @csrf
-                <button type="submit" class="text-xs font-bold text-red-600 hover:underline">Salir</button>
-            </form>
+            <button type="button" onclick="openLogoutModal()" class="text-xs font-bold text-red-600 hover:underline cursor-pointer">Salir</button>
         @endauth
     </div>
 </header>
@@ -233,5 +230,8 @@
     Plataforma HyK Mayorista &copy; {{ date('Y') }} - Seminario de Integración
 </footer>
 
+@auth
+    <x-modal-logout />
+@endauth
 </body>
 </html>

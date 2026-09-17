@@ -57,10 +57,7 @@
                 Mis Pedidos
             </a>
             <span class="hidden md:block mr-4 text-sm font-bold text-primary">Hola, {{ auth()->user()->name }}</span>
-            <form action="{{ route('logout') }}" method="POST" class="inline">
-                @csrf
-                <button class="text-sm font-bold text-red-600 hover:underline mr-4" type="submit">Salir</button>
-            </form>
+            <button type="button" onclick="openLogoutModal()" class="text-sm font-bold text-red-600 hover:underline mr-4 cursor-pointer">Salir</button>
         @else
             <a href="{{ route('login') }}" class="text-sm font-bold text-primary hover:underline mr-4">Ingresar / Registrarse</a>
         @endauth
@@ -273,5 +270,8 @@
     <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">chat_spark</span>
 </button>
 
+@auth
+    <x-modal-logout />
+@endauth
 </body>
 </html>
