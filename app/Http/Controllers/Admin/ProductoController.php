@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SaveProductoRequest;
+use App\Models\Categoria;
 use App\Models\Producto;
+use Illuminate\Support\Facades\DB;
 
 class ProductoController extends Controller
 {
@@ -16,14 +19,15 @@ class ProductoController extends Controller
 
     public function create()
     {
-        $categorias = \App\Models\Categoria::all();
+        $categorias = Categoria::all();
+
         return view('admin.productos.create', compact('categorias'));
     }
 
-    public function store(\App\Http\Requests\SaveProductoRequest $request)
+    public function store(SaveProductoRequest $request)
     {
         // 1. Usar una transacción para asegurar que se guarde el producto Y sus presentaciones juntos
-        \Illuminate\Support\Facades\DB::transaction(function () use ($request) {
+        DB::transaction(function () use ($request) {
             // Guardar datos básicos
             $producto = Producto::create([
                 'nombre_producto' => $request->nombre_producto,
@@ -47,14 +51,14 @@ class ProductoController extends Controller
     {
         // Cargar el producto con sus presentaciones
         $producto->load('presentaciones');
-        $categorias = \App\Models\Categoria::all();
-        
+        $categorias = Categoria::all();
+
         return view('admin.productos.edit', compact('producto', 'categorias'));
     }
 
-    public function update(\App\Http\Requests\SaveProductoRequest $request, Producto $producto)
+    public function update(SaveProductoRequest $request, Producto $producto)
     {
-        \Illuminate\Support\Facades\DB::transaction(function () use ($request, $producto) {
+        DB::transaction(function () use ($request, $producto) {
             $producto->update([
                 'nombre_producto' => $request->nombre_producto,
                 'descripcion_producto' => $request->descripcion_producto,
@@ -66,7 +70,7 @@ class ProductoController extends Controller
 
             // Borrar presentaciones viejas y recrearlas (enfoque más simple)
             $producto->presentaciones()->delete();
-            
+
             foreach ($request->presentaciones as $pres) {
                 $producto->presentaciones()->create($pres);
             }
@@ -78,6 +82,7 @@ class ProductoController extends Controller
     public function destroy(Producto $producto)
     {
         $producto->delete();
+
         return redirect()->route('admin.productos.index')->with('success', 'Producto eliminado.');
     }
 }

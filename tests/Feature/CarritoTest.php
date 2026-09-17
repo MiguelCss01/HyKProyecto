@@ -223,4 +223,138 @@ class CarritoTest extends TestCase
             'cantidad' => 4,
         ]);
     }
+
+    /**
+     * RF Flujo Checkout: Usuario invitado al presionar confirmar pedido es redirigido a login con mensaje flash y URL prevista.
+     */
+    public function test_invitado_al_confirmar_pedido_es_redirigido_a_login_con_mensaje_flash_y_url_prevista(): void
+    {
+        // Invitado agrega un producto al carrito
+        $this->post(route('carrito.agregar'), [
+            'presentacion_id' => $this->presentacionUnidad->id,
+            'cantidad' => 2,
+        ]);
+
+        // Intenta proceder a la confirmación
+        $response = $this->get(route('carrito.confirmar'));
+
+        // Debe ser redirigido a login
+        $response->assertRedirect(route('login'));
+        // Debe tener el mensaje flash informativo explicativo
+        $response->assertSessionHas('info', 'Debes iniciar sesión para confirmar tu pedido.');
+        // Debe registrar la URL prevista (url.intended)
+        $this->assertEquals(route('carrito.confirmar'), session('url.intended'));
+    }
+
+    /**
+     * RF Flujo Checkout: Al autenticarse tras la redirección, el usuario vuelve a la confirmación con su carrito intacto.
+     */
+    public function test_usuario_tras_autenticarse_vuelve_a_confirmacion_con_carrito_intacto(): void
+    {
+        $user = User::create([
+            'name' => 'Cliente Test',
+            'email' => 'cliente@test.com',
+            'password' => Hash::make('password123'),
+            'tipo_cliente' => 'minorista',
+            'role' => 'cliente',
+        ]);
+
+        // Invitado agrega productos al carrito (2 unidades x $1200 = $2400)
+        $this->post(route('carrito.agregar'), [
+            'presentacion_id' => $this->presentacionUnidad->id,
+            'cantidad' => 2,
+        ]);
+
+        // Al intentar confirmar como invitado se guarda url.intended
+        $this->get(route('carrito.confirmar'));
+
+        // Se autentica mediante login
+        $loginResponse = $this->post('/login', [
+            'email' => 'cliente@test.com',
+            'password' => 'password123',
+        ]);
+
+        // Debe redirigir automáticamente a la URL prevista (intended: carrito.confirmar)
+        $loginResponse->assertRedirect(route('carrito.confirmar'));
+
+        // Al acceder a la confirmación ya autenticado
+        $confirmacionResponse = $this->get(route('carrito.confirmar'));
+        $confirmacionResponse->assertStatus(200);
+        $confirmacionResponse->assertViewIs('pedidos.confirmar');
+        // El carrito se mantiene intacto con el total de 2400
+        $confirmacionResponse->assertSee('2.400');
+        $confirmacionResponse->assertSee('Cliente Test');
+    }
+
+    /**
+     * RF Flujo Checkout: Usuario ya autenticado avanza directamente a la confirmación de pedido sin redirección a login.
+     */
+    public function test_usuario_ya_autenticado_avanza_directamente_a_confirmacion(): void
+    {
+        $user = User::create([
+            'name' => 'Maria Lopez',
+            'email' => 'maria@test.com',
+            'password' => Hash::make('password123'),
+            'tipo_cliente' => 'minorista',
+            'role' => 'cliente',
+        ]);
+
+        $this->actingAs($user);
+
+        // Agrega producto al carrito
+        $this->post(route('carrito.agregar'), [
+            'presentacion_id' => $this->presentacionUnidad->id,
+            'cantidad' => 1,
+        ]);
+
+        // Avanza directamente al checkout
+        $response = $this->get(route('carrito.confirmar'));
+
+        $response->assertStatus(200);
+        $response->assertViewIs('pedidos.confirmar');
+        $response->assertSee('Maria Lopez');
+        $response->assertSee('1.200');
+    }
+
+    /**
+     * RF Flujo Checkout: No se permite confirmar pedido si el carrito está vacío.
+     */
+    public function test_no_permite_confirmar_pedido_si_carrito_esta_vacio(): void
+    {
+        $user = User::create([
+            'name' => 'Carlos Gomez',
+            'email' => 'carlos@test.com',
+            'password' => Hash::make('password123'),
+            'tipo_cliente' => 'minorista',
+            'role' => 'cliente',
+        ]);
+
+        // Caso autenticado con carrito vacío
+        $this->actingAs($user);
+        $responseAuth = $this->get(route('carrito.confirmar'));
+        $responseAuth->assertRedirect(route('carrito.index'));
+        $responseAuth->assertSessionHas('error', 'Tu carrito está vacío. Agrega productos antes de confirmar el pedido.');
+
+        // Caso invitado con carrito vacío
+        auth()->logout();
+        $responseGuest = $this->get(route('carrito.confirmar'));
+        $responseGuest->assertRedirect(route('carrito.index'));
+        $responseGuest->assertSessionHas('error', 'Tu carrito está vacío. Agrega productos antes de confirmar el pedido.');
+    }
+
+    /**
+     * RF Flujo Checkout: El botón en la vista del carrito contiene el enlace a la ruta de confirmación.
+     */
+    public function test_boton_en_vista_carrito_enlaza_a_ruta_confirmar(): void
+    {
+        $this->post(route('carrito.agregar'), [
+            'presentacion_id' => $this->presentacionUnidad->id,
+            'cantidad' => 1,
+        ]);
+
+        $response = $this->get(route('carrito.index'));
+        $response->assertStatus(200);
+        $response->assertSee(route('carrito.confirmar'));
+        $response->assertSee('Iniciar Pedido / Confirmar');
+    }
 }

@@ -37,4 +37,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(Carrito::class);
     }
+
+    /**
+     * Historial de pedidos realizados por el usuario.
+     */
+    public function pedidos()
+    {
+        return $this->hasMany(Pedido::class);
+    }
 }

@@ -40,6 +40,27 @@
         </div>
     @endif
 
+    @if(session('info'))
+        <div class="alert-box absolute top-4 left-1/2 transform -translate-x-1/2 z-50 bg-blue-100 border border-blue-400 text-blue-800 px-4 py-3 rounded shadow-lg flex items-center gap-2" role="alert">
+            <span class="material-symbols-outlined text-blue-600 text-xl">info</span>
+            <span class="block sm:inline font-medium text-sm">{{ session('info') }}</span>
+        </div>
+    @endif
+
+    @if(session('warning'))
+        <div class="alert-box absolute top-4 left-1/2 transform -translate-x-1/2 z-50 bg-amber-100 border border-amber-400 text-amber-800 px-4 py-3 rounded shadow-lg flex items-center gap-2" role="alert">
+            <span class="material-symbols-outlined text-amber-600 text-xl">warning</span>
+            <span class="block sm:inline font-medium text-sm">{{ session('warning') }}</span>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert-box absolute top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg flex items-center gap-2" role="alert">
+            <span class="material-symbols-outlined text-red-600 text-xl">error</span>
+            <span class="block sm:inline font-medium text-sm">{{ session('error') }}</span>
+        </div>
+    @endif
+
     @if($errors->any())
         <div class="alert-box absolute top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg" role="alert">
             <ul class="list-disc pl-5">

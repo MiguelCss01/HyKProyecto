@@ -52,6 +52,10 @@
     </div>
     <div class="flex items-center gap-sm">
         @auth
+            <a href="{{ route('pedidos.index') }}" class="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline mr-4" title="Ver mis pedidos">
+                <span class="material-symbols-outlined text-base">receipt_long</span>
+                Mis Pedidos
+            </a>
             <span class="hidden md:block mr-4 text-sm font-bold text-primary">Hola, {{ auth()->user()->name }}</span>
             <form action="{{ route('logout') }}" method="POST" class="inline">
                 @csrf
@@ -92,6 +96,14 @@
         </div>
     </div>
     <ul class="flex flex-col py-sm flex-1 overflow-y-auto">
+        @auth
+            <li class="px-sm py-xs mb-2 border-b border-outline-variant/60 pb-2">
+                <a class="flex items-center gap-sm px-4 py-2 rounded-lg text-primary font-bold hover:bg-surface-container transition-all" href="{{ route('pedidos.index') }}">
+                    <span class="material-symbols-outlined text-primary">receipt_long</span>
+                    <span>Mis Pedidos</span>
+                </a>
+            </li>
+        @endauth
         @foreach($categorias as $cat)
             <li class="px-sm py-xs">
                 <a class="flex items-center gap-sm px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-all" href="#">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\CartService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class CarritoController extends Controller
@@ -94,5 +95,30 @@ class CarritoController extends Controller
         $resultado = $this->cartService->vaciar();
 
         return redirect()->route('carrito.index')->with('success', $resultado['message']);
+    }
+
+    /**
+     * Procesa la solicitud para confirmar pedido / proceder al checkout.
+     * Si el usuario no está autenticado, lo redirige a la pantalla de login con redirect()->guest()
+     * y un mensaje explicativo, preservando la URL prevista y su carrito intacto.
+     * Si ya está autenticado, le permite avanzar directamente al proceso de confirmación.
+     */
+    public function confirmar(): View|RedirectResponse
+    {
+        $cart = $this->cartService->obtenerCarrito();
+
+        if ($cart['total_items'] <= 0) {
+            return redirect()->route('carrito.index')
+                ->with('error', 'Tu carrito está vacío. Agrega productos antes de confirmar el pedido.');
+        }
+
+        if (! Auth::check()) {
+            return redirect()->guest(route('login'))
+                ->with('info', 'Debes iniciar sesión para confirmar tu pedido.');
+        }
+
+        $user = Auth::user();
+
+        return view('pedidos.confirmar', compact('cart', 'user'));
     }
 }

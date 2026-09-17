@@ -81,11 +81,11 @@ class AuthController extends Controller
 
             $request->session()->regenerate();
 
-            if (Auth::user()->role === 'admin') {
-                return redirect()->intended('/admin/dashboard');
+            if ($user->role === 'admin') {
+                return redirect()->intended(route('admin.dashboard'));
             }
 
-            return redirect()->intended('/');
+            return redirect()->intended(route('catalogo'));
         }
 
         return back()->withErrors([

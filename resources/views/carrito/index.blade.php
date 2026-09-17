@@ -61,6 +61,10 @@
         </a>
 
         @auth
+            <a href="{{ route('pedidos.index') }}" class="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline" title="Ver mis pedidos">
+                <span class="material-symbols-outlined text-base">receipt_long</span>
+                Mis Pedidos
+            </a>
             <span class="hidden md:inline text-sm font-bold text-on-surface-variant">
                 Hola, {{ auth()->user()->name }}
             </span>
@@ -273,10 +277,10 @@
                     </div>
 
                     <!-- Botón de Continuar Compra (RF 3.2) -->
-                    <button type="button" onclick="alert('Módulo de confirmación de pedido (RF 3.2 / Checkout) listo para conectarse.');" class="w-full bg-secondary text-on-secondary font-bold py-3 px-4 rounded-lg hover:bg-[#00531a] transition-colors flex items-center justify-center gap-2 shadow-md">
+                    <a href="{{ route('carrito.confirmar') }}" class="w-full bg-secondary text-on-secondary font-bold py-3 px-4 rounded-lg hover:bg-[#00531a] transition-colors flex items-center justify-center gap-2 shadow-md text-center">
                         <span class="material-symbols-outlined text-xl">check_circle</span>
                         Iniciar Pedido / Confirmar
-                    </button>
+                    </a>
 
                     <a href="{{ route('catalogo') }}" class="w-full mt-3 text-center text-xs font-bold text-primary hover:underline block">
                         &larr; Seguir sumando productos
