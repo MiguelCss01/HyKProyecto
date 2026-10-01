@@ -117,7 +117,12 @@
                     </div>
                     <div class="col-span-2">
                         <label class="block font-semibold text-sm">Contraseña</label>
-                        <input class="w-full rounded border px-4 py-2 mt-1" name="password" type="password" required/>
+                        <div class="relative mt-1">
+                            <input class="w-full rounded border px-4 py-2 pr-11" id="register_password" name="password" type="password" required/>
+                            <button type="button" onclick="togglePasswordVisibility('register_password', 'eye-register')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer" aria-label="Mostrar u ocultar contraseña">
+                                <span id="eye-register" class="material-symbols-outlined text-xl select-none">visibility</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -165,7 +170,12 @@
                 </div>
                 <div>
                     <label class="block font-semibold text-sm">Contraseña</label>
-                    <input class="w-full rounded border px-4 py-2 mt-1" name="password" placeholder="Tu contraseña" type="password" required/>
+                    <div class="relative mt-1">
+                        <input class="w-full rounded border px-4 py-2 pr-11" id="login_password" name="password" placeholder="Tu contraseña" type="password" required/>
+                        <button type="button" onclick="togglePasswordVisibility('login_password', 'eye-login')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer" aria-label="Mostrar u ocultar contraseña">
+                            <span id="eye-login" class="material-symbols-outlined text-xl select-none">visibility</span>
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="flex items-center justify-between mt-2">
@@ -173,7 +183,7 @@
                         <input type="checkbox" name="remember" class="rounded text-primary">
                         <span>Recordarme</span>
                     </label>
-                    <a href="#" class="text-sm text-primary hover:underline">¿Olvidaste tu contraseña?</a>
+                    <a href="{{ route('password.request') }}" class="text-sm text-primary hover:underline">¿Olvidaste tu contraseña?</a>
                 </div>
 
                 <button class="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-blue-900 transition mt-6" type="submit">
@@ -222,6 +232,19 @@
 </div>
 
 <script>
+    // Lógica para mostrar/ocultar contraseñas
+    function togglePasswordVisibility(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.textContent = 'visibility_off';
+        } else {
+            input.type = 'password';
+            icon.textContent = 'visibility';
+        }
+    }
+
     // Lógica para cambiar entre DNI/CUIT (Registro)
     function toggleDynamicFields(type) {
         const retail = document.getElementById('retail-fields');

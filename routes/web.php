@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ProductoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\CatalogoController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PedidoController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,15 @@ Route::get('/acceso', [AuthController::class, 'showAcceso'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Rutas de Recuperación de Contraseña
+Route::get('/recuperar-contrasena', [PasswordResetController::class, 'showRequestForm'])->name('password.request');
+Route::post('/recuperar-contrasena', [PasswordResetController::class, 'sendResetCode'])->name('password.email')->middleware('throttle:6,1');
+Route::get('/recuperar-contrasena/codigo', [PasswordResetController::class, 'showCodeForm'])->name('password.code');
+Route::post('/recuperar-contrasena/codigo', [PasswordResetController::class, 'verifyCode'])->name('password.verify_code')->middleware('throttle:10,1');
+Route::post('/recuperar-contrasena/reenviar', [PasswordResetController::class, 'resendCode'])->name('password.resend_code')->middleware('throttle:4,1');
+Route::get('/recuperar-contrasena/restablecer/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+Route::post('/recuperar-contrasena/restablecer', [PasswordResetController::class, 'resetPassword'])->name('password.update')->middleware('throttle:10,1');
 
 // Rutas de Administración
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
