@@ -96,14 +96,18 @@
         </div>
 
         @if(!empty($cart['items']))
-            <form action="{{ route('carrito.vaciar') }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas vaciar todo el carrito?');">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="text-xs font-bold text-red-600 hover:text-red-800 flex items-center gap-1 border border-red-200 rounded px-3 py-1.5 hover:bg-red-50 transition-colors">
-                    <span class="material-symbols-outlined text-sm">delete_sweep</span>
-                    Vaciar Carrito
-                </button>
-            </form>
+            <button type="button" 
+                    onclick="openConfirmDeleteModal({
+                        actionUrl: '{{ route('carrito.vaciar') }}',
+                        title: '¿Vaciar todo el carrito?',
+                        message: 'Se eliminarán todos los artículos agregados a tu lista de compra. Esta acción no se puede deshacer.',
+                        btnText: 'Sí, vaciar carrito',
+                        icon: 'delete_sweep'
+                    })" 
+                    class="text-xs font-bold text-red-600 hover:text-red-800 flex items-center gap-1 border border-red-200 rounded px-3 py-1.5 hover:bg-red-50 transition-colors cursor-pointer">
+                <span class="material-symbols-outlined text-sm">delete_sweep</span>
+                Vaciar Carrito
+            </button>
         @endif
     </div>
 
@@ -205,13 +209,20 @@
                             </div>
 
                             <!-- Botón Eliminar Ítem -->
-                            <form action="{{ route('carrito.eliminar', $presentacionId) }}" method="POST" onsubmit="return confirm('¿Quitar este artículo del carrito?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-on-surface-variant hover:text-red-600 transition-colors p-1" title="Eliminar del carrito">
-                                    <span class="material-symbols-outlined text-lg">delete</span>
-                                </button>
-                            </form>
+                            <button type="button" 
+                                    onclick="openConfirmDeleteModal({
+                                        actionUrl: '{{ route('carrito.eliminar', $presentacionId) }}',
+                                        title: '¿Quitar artículo del carrito?',
+                                        productName: '{{ addslashes($item['producto']->nombre_producto) }}',
+                                        productType: '{{ addslashes($item['presentacion']->tipo) }}',
+                                        message: 'El producto seleccionado será removido de tu lista de compra.',
+                                        btnText: 'Sí, eliminar',
+                                        icon: 'delete'
+                                    })" 
+                                    class="text-on-surface-variant hover:text-red-600 transition-colors p-1 cursor-pointer" 
+                                    title="Eliminar del carrito">
+                                <span class="material-symbols-outlined text-lg">delete</span>
+                            </button>
                         </div>
                     </article>
                 @endforeach
@@ -296,5 +307,6 @@
 @auth
     <x-modal-logout />
 @endauth
+<x-modal-confirm-delete />
 </body>
 </html>

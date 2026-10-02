@@ -122,9 +122,24 @@ class CartService
         ];
         session()->put('carrito', $cart);
 
-        // Si el usuario está autenticado, sincronizar con base de datos
+        // Si el usuario está autenticado, sincronizar directamente con la base de datos
         if (auth()->check()) {
-            $this->sincronizarConBD(auth()->user());
+            $carrito = Carrito::firstOrCreate(
+                ['user_id' => auth()->id()],
+                ['total' => 0.0]
+            );
+
+            ItemCarrito::updateOrCreate(
+                [
+                    'carrito_id' => $carrito->id,
+                    'presentacion_producto_id' => $presentacionId,
+                ],
+                [
+                    'cantidad' => $nuevaCantidadPresentacion,
+                ]
+            );
+
+            $carrito->recalcularTotal();
         }
 
         return [
@@ -173,7 +188,19 @@ class CartService
         session()->put('carrito', $cart);
 
         if (auth()->check()) {
-            $this->sincronizarConBD(auth()->user());
+            $carrito = Carrito::where('user_id', auth()->id())->first();
+            if ($carrito) {
+                ItemCarrito::updateOrCreate(
+                    [
+                        'carrito_id' => $carrito->id,
+                        'presentacion_producto_id' => $presentacionId,
+                    ],
+                    [
+                        'cantidad' => $nuevaCantidad,
+                    ]
+                );
+                $carrito->recalcularTotal();
+            }
         }
 
         return [
@@ -191,13 +218,15 @@ class CartService
     {
         $cart = session()->get('carrito', []);
 
-        if (isset($cart[$presentacionId])) {
-            unset($cart[$presentacionId]);
-            session()->put('carrito', $cart);
-        }
+        unset($cart[$presentacionId], $cart[(string) $presentacionId]);
+        session()->put('carrito', $cart);
 
         if (auth()->check()) {
-            $this->sincronizarConBD(auth()->user());
+            $carrito = Carrito::where('user_id', auth()->id())->first();
+            if ($carrito) {
+                $carrito->items()->where('presentacion_producto_id', $presentacionId)->delete();
+                $carrito->recalcularTotal();
+            }
         }
 
         return [

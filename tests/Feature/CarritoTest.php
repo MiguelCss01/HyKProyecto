@@ -155,6 +155,99 @@ class CarritoTest extends TestCase
     }
 
     /**
+     * RF 3.3: Quitar un artículo específico del carrito siendo usuario autenticado (se elimina de sesión y BD).
+     */
+    public function test_usuario_autenticado_puede_eliminar_producto_del_carrito(): void
+    {
+        $user = User::create([
+            'name' => 'Usuario Carrito',
+            'email' => 'carrito_test@test.com',
+            'password' => Hash::make('password123'),
+            'tipo_cliente' => 'minorista',
+            'role' => 'cliente',
+        ]);
+
+        $this->actingAs($user);
+
+        // Agrega dos productos diferentes
+        $this->post(route('carrito.agregar'), [
+            'presentacion_id' => $this->presentacionUnidad->id,
+            'cantidad' => 2,
+        ]);
+        $this->post(route('carrito.agregar'), [
+            'presentacion_id' => $this->presentacionPack->id,
+            'cantidad' => 1,
+        ]);
+
+        // Verifica que ambos están en BD
+        $this->assertDatabaseHas('item_carritos', [
+            'presentacion_producto_id' => $this->presentacionUnidad->id,
+            'cantidad' => 2,
+        ]);
+        $this->assertDatabaseHas('item_carritos', [
+            'presentacion_producto_id' => $this->presentacionPack->id,
+            'cantidad' => 1,
+        ]);
+
+        // Elimina la presentación unidad
+        $response = $this->delete(route('carrito.eliminar', $this->presentacionUnidad->id));
+
+        $response->assertSessionHas('success');
+
+        // Verifica que se eliminó de la sesión
+        $carrito = session('carrito');
+        $this->assertArrayNotHasKey($this->presentacionUnidad->id, $carrito);
+        $this->assertArrayHasKey($this->presentacionPack->id, $carrito);
+
+        // Verifica que se eliminó de la base de datos y no fue resucitado
+        $this->assertDatabaseMissing('item_carritos', [
+            'presentacion_producto_id' => $this->presentacionUnidad->id,
+        ]);
+        $this->assertDatabaseHas('item_carritos', [
+            'presentacion_producto_id' => $this->presentacionPack->id,
+            'cantidad' => 1,
+        ]);
+
+        // Al visitar la vista del carrito, la presentación eliminada no debe reaparecer
+        $viewResponse = $this->get(route('carrito.index'));
+        $viewResponse->assertStatus(200);
+        $this->assertArrayNotHasKey($this->presentacionUnidad->id, session('carrito', []));
+    }
+
+    /**
+     * RF 3.3: Vaciar el carrito siendo usuario autenticado (se eliminan los items de BD).
+     */
+    public function test_usuario_autenticado_puede_vaciar_el_carrito(): void
+    {
+        $user = User::create([
+            'name' => 'Usuario Vaciar',
+            'email' => 'vaciar_test@test.com',
+            'password' => Hash::make('password123'),
+            'tipo_cliente' => 'minorista',
+            'role' => 'cliente',
+        ]);
+
+        $this->actingAs($user);
+
+        $this->post(route('carrito.agregar'), [
+            'presentacion_id' => $this->presentacionUnidad->id,
+            'cantidad' => 2,
+        ]);
+
+        $this->assertDatabaseHas('item_carritos', [
+            'presentacion_producto_id' => $this->presentacionUnidad->id,
+        ]);
+
+        $response = $this->delete(route('carrito.vaciar'));
+
+        $response->assertRedirect(route('carrito.index'));
+        $this->assertEmpty(session('carrito', []));
+        $this->assertDatabaseMissing('item_carritos', [
+            'presentacion_producto_id' => $this->presentacionUnidad->id,
+        ]);
+    }
+
+    /**
      * RF 3.4 & RF 1.2: Consulta de carrito con precios diferenciados minorista vs mayorista.
      */
     public function test_precios_diferenciados_segun_tipo_de_cliente(): void
