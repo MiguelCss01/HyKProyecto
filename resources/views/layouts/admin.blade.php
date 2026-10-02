@@ -87,12 +87,12 @@
                 <span class="material-symbols-outlined {{ request()->routeIs('admin.productos.*') ? 'fill' : 'group-hover:text-primary transition-colors' }}" data-icon="inventory">inventory</span>
                 <span>Catálogo y Stock</span>
             </a>
-            <a href="#" class="flex items-center gap-md font-label-md py-3 px-lg transition-colors group text-on-surface-variant hover:bg-surface-container-high">
-                <span class="material-symbols-outlined group-hover:text-primary transition-colors" data-icon="receipt_long">receipt_long</span>
+            <a href="{{ route('admin.pedidos.index') }}" class="flex items-center gap-md font-label-md py-3 px-lg transition-colors group {{ request()->routeIs('admin.pedidos.*') ? 'text-primary border-r-4 border-primary bg-primary-fixed-dim/10 opacity-80 transition-all duration-150' : 'text-on-surface-variant hover:bg-surface-container-high' }}">
+                <span class="material-symbols-outlined {{ request()->routeIs('admin.pedidos.*') ? 'fill' : 'group-hover:text-primary transition-colors' }}" data-icon="receipt_long">receipt_long</span>
                 <span>Pedidos Entrantes</span>
             </a>
-            <a href="#" class="flex items-center gap-md font-label-md py-3 px-lg transition-colors group text-on-surface-variant hover:bg-surface-container-high">
-                <span class="material-symbols-outlined group-hover:text-primary transition-colors" data-icon="group">group</span>
+            <a href="{{ route('admin.usuarios.index') }}" class="flex items-center gap-md font-label-md py-3 px-lg transition-colors group {{ request()->routeIs('admin.usuarios.*') ? 'text-primary border-r-4 border-primary bg-primary-fixed-dim/10 opacity-80 transition-all duration-150' : 'text-on-surface-variant hover:bg-surface-container-high' }}">
+                <span class="material-symbols-outlined {{ request()->routeIs('admin.usuarios.*') ? 'fill' : 'group-hover:text-primary transition-colors' }}" data-icon="group">group</span>
                 <span>Clientes</span>
             </a>
         </nav>

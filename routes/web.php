@@ -60,4 +60,6 @@ Route::post('/recuperar-contrasena/restablecer', [PasswordResetController::class
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
     Route::resource('productos', ProductoController::class);
+    Route::resource('usuarios', \App\Http\Controllers\Admin\UserController::class)->only(['index', 'destroy']);
+    Route::resource('pedidos', \App\Http\Controllers\Admin\PedidoController::class)->only(['index', 'show', 'update']);
 });
