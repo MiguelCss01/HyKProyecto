@@ -7,6 +7,7 @@ use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\PerfilController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -30,6 +31,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/mis-pedidos/{id}', [PedidoController::class, 'show'])->name('pedidos.show');
     Route::post('/pedidos/confirmar', [PedidoController::class, 'confirmar'])->name('pedidos.confirmar');
     Route::get('/pedidos/{id}/exito', [PedidoController::class, 'exito'])->name('pedido.exito');
+
+    // Gestión del Perfil del Cliente
+    Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil.index');
+    Route::post('/perfil/verificar-password', [PerfilController::class, 'verifyPassword'])->name('perfil.verify.password');
+    Route::post('/perfil/enviar-codigo', [PerfilController::class, 'sendCode'])->name('perfil.send.code')->middleware('throttle:5,1');
+    Route::post('/perfil/verificar-codigo', [PerfilController::class, 'verifyCode'])->name('perfil.verify.code')->middleware('throttle:10,1');
+    Route::get('/perfil/editar', [PerfilController::class, 'edit'])->name('perfil.edit');
+    Route::put('/perfil', [PerfilController::class, 'update'])->name('perfil.update');
 });
 
 // Rutas de Autenticación

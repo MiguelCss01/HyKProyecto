@@ -67,6 +67,10 @@
         </a>
 
         @auth
+            <a href="{{ Route::has('perfil.index') ? route('perfil.index') : '#' }}" class="flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
+                <span class="material-symbols-outlined text-lg">person</span>
+                Mi Perfil
+            </a>
             <span class="hidden md:inline text-sm font-bold text-on-surface-variant">
                 Hola, {{ auth()->user()->name }}
             </span>
