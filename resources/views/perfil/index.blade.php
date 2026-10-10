@@ -249,7 +249,7 @@
                 <div>
                     <div class="text-xs text-on-surface-variant font-medium">Método de Verificación</div>
                     <div class="text-sm font-semibold text-on-surface mt-1">Contraseña o Código 2FA por Email</div>
-                    <p class="text-xs text-on-surface-variant mt-1">Código de 6 dígitos enviado a {{ $maskedEmail }}</p>
+                    <p class="text-xs text-on-surface-variant mt-1">Código de 6 dígitos enviado a {{ $user->email }}</p>
                 </div>
                 <div class="flex items-center sm:justify-end">
                     <button type="button" onclick="openSecurityModal()" class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 border border-outline-variant rounded-xl text-xs font-bold text-primary hover:bg-surface-variant/40 transition-colors cursor-pointer">
@@ -357,7 +357,7 @@
             <!-- Tab 2: Código por Correo (2FA) -->
             <div id="tab-content-code" class="hidden space-y-4">
                 <p class="text-xs text-on-surface-variant leading-relaxed">
-                    Te enviaremos un código de seguridad de 6 dígitos a tu correo registrado (<strong>{{ $maskedEmail }}</strong>).
+                    Te enviaremos un código de seguridad de 6 dígitos a tu correo registrado (<strong>{{ $user->email }}</strong>).
                 </p>
 
                 <!-- Si el código aún no se ha enviado -->

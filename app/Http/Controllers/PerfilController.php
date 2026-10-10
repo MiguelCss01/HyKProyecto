@@ -25,7 +25,6 @@ class PerfilController extends Controller
         return view('perfil.index', [
             'user' => $user,
             'isVerified' => $isVerified,
-            'maskedEmail' => $this->maskEmail($user->email),
         ]);
     }
 
@@ -78,7 +77,7 @@ class PerfilController extends Controller
         Mail::to($user->email)->send(new ProfileSecurityCodeMail($code, 15));
 
         return back()
-            ->with('success', 'Hemos enviado un código de seguridad de 6 dígitos a tu correo ('.$this->maskEmail($user->email).').')
+            ->with('success', 'Hemos enviado un código de seguridad de 6 dígitos a tu correo ('.$user->email.').')
             ->with('open_security_modal', true)
             ->with('security_tab', 'code')
             ->with('code_sent', true);
@@ -221,26 +220,5 @@ class PerfilController extends Controller
         }
 
         return (now()->timestamp - $verifiedAt) < (15 * 60);
-    }
-
-    /**
-     * Oculta parte del correo electrónico para proteger la privacidad.
-     */
-    private function maskEmail(string $email): string
-    {
-        $parts = explode('@', $email, 2);
-        if (count($parts) !== 2) {
-            return $email;
-        }
-
-        $name = $parts[0];
-        $domain = $parts[1];
-        $len = strlen($name);
-
-        $maskedName = $len > 2
-            ? substr($name, 0, 2).str_repeat('*', max(1, $len - 2))
-            : $name.'***';
-
-        return $maskedName.'@'.$domain;
     }
 }
