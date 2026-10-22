@@ -207,12 +207,20 @@
                                     @endif
                                 </td>
 
-                                <!-- Botón Detalle -->
+                                <!-- Botones de Acción -->
                                 <td class="py-4 px-4 md:px-6 text-right whitespace-nowrap">
-                                    <a href="{{ route('pedidos.show', $pedido->id) }}" class="inline-flex items-center gap-1 text-xs font-bold text-primary hover:text-primary-container border border-primary/30 rounded-lg px-3 py-1.5 hover:bg-primary/5 transition-colors">
-                                        <span>Ver Detalle</span>
-                                        <span class="material-symbols-outlined text-sm">visibility</span>
-                                    </a>
+                                    <div class="inline-flex items-center gap-2 justify-end flex-wrap">
+                                        @if($pedido->pago)
+                                            <a href="{{ route('pedidos.comprobante', $pedido->id) }}" target="_blank" class="inline-flex items-center gap-1 text-xs font-bold text-[#009ee3] hover:text-[#007eb5] border border-[#009ee3]/40 rounded-lg px-3 py-1.5 hover:bg-[#009ee3]/5 transition-colors">
+                                                <span class="material-symbols-outlined text-sm">picture_as_pdf</span>
+                                                <span>Ver Comprobante</span>
+                                            </a>
+                                        @endif
+                                        <a href="{{ route('pedidos.show', $pedido->id) }}" class="inline-flex items-center gap-1 text-xs font-bold text-primary hover:text-primary-container border border-primary/30 rounded-lg px-3 py-1.5 hover:bg-primary/5 transition-colors">
+                                            <span>Ver Detalle</span>
+                                            <span class="material-symbols-outlined text-sm">visibility</span>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

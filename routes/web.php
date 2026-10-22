@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ProductoController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\CatalogoController;
@@ -26,11 +27,16 @@ Route::get('/carrito/confirmar', [CarritoController::class, 'confirmar'])->name(
 
 // Rutas de Pedidos / Checkout (RF 3.2 / RF 4)
 Route::get('/pedidos/checkout', [PedidoController::class, 'checkout'])->name('pedidos.checkout');
+Route::get('/pedidos/retorno-mercadopago', [PedidoController::class, 'retornoMercadoPago'])->name('pedidos.retorno-mp');
+
 Route::middleware('auth')->group(function () {
     Route::get('/mis-pedidos', [PedidoController::class, 'misPedidos'])->name('pedidos.index');
     Route::get('/mis-pedidos/{id}', [PedidoController::class, 'show'])->name('pedidos.show');
     Route::post('/pedidos/confirmar', [PedidoController::class, 'confirmar'])->name('pedidos.confirmar');
+    Route::get('/pedidos/{id}/pago', [PedidoController::class, 'mostrarPago'])->name('pedidos.pago');
+    Route::post('/pedidos/{id}/procesar-pago', [PedidoController::class, 'procesarPago'])->name('pedidos.procesar-pago');
     Route::get('/pedidos/{id}/exito', [PedidoController::class, 'exito'])->name('pedido.exito');
+    Route::get('/pedidos/{id}/comprobante', [PedidoController::class, 'comprobante'])->name('pedidos.comprobante');
 
     // Gestión del Perfil del Cliente
     Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil.index');
@@ -60,6 +66,6 @@ Route::post('/recuperar-contrasena/restablecer', [PasswordResetController::class
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
     Route::resource('productos', ProductoController::class);
-    Route::resource('usuarios', \App\Http\Controllers\Admin\UserController::class)->only(['index', 'destroy']);
-    Route::resource('pedidos', \App\Http\Controllers\Admin\PedidoController::class)->only(['index', 'show', 'update']);
+    Route::resource('usuarios', UserController::class)->only(['index', 'destroy']);
+    Route::resource('pedidos', App\Http\Controllers\Admin\PedidoController::class)->only(['index', 'show', 'update']);
 });

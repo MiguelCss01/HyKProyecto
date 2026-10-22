@@ -118,13 +118,47 @@
     </div>
 
     <!-- Aviso Informativo según Estado -->
-    @if($pedido->estado === 'PENDIENTE')
-        <div class="mb-6 p-4 bg-amber-50 border border-amber-300 text-amber-900 rounded-xl flex items-start gap-3 shadow-sm">
-            <span class="material-symbols-outlined text-amber-600 text-2xl flex-shrink-0 mt-0.5">schedule</span>
-            <div class="text-sm">
-                <strong class="font-bold block mb-0.5">Pedido Registrado y Pendiente de Procesamiento</strong>
-                <span>Tu compra ha sido reservada en el sistema. Estamos procesando la orden para su posterior facturación y entrega en local.</span>
+    @if($pedido->estado === 'PAGADO' || $pedido->pago)
+        <div class="mb-6 p-5 bg-blue-50/90 border border-blue-200 rounded-2xl flex items-start gap-3.5 shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                <span class="material-symbols-outlined text-2xl">storefront</span>
             </div>
+            <div class="text-sm flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-xs uppercase tracking-wider font-bold text-primary">Retiro en Sucursal</span>
+                    <span class="bg-green-100 text-green-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Pago Acreditado</span>
+                </div>
+                <strong class="font-bold text-gray-900 block text-base mb-1">
+                    ¡Te avisaremos cuando tu pedido esté listo para pasar a buscar a la sucursal!
+                </strong>
+                <p class="text-xs text-gray-600 leading-relaxed">
+                    Tu compra fue abonada a través de Mercado Pago. El depósito está preparando los artículos. En cuanto el pedido se encuentre empaquetado y listo para entrega, te avisaremos para que puedas acercarte a retirarlo con tu DNI / CUIT.
+                </p>
+                <div class="pt-2 mt-2 border-t border-blue-200/60 flex flex-wrap gap-4 text-xs text-gray-600">
+                    <span class="flex items-center gap-1 font-medium text-gray-700">
+                        <span class="material-symbols-outlined text-sm text-primary">location_on</span>
+                        Calle Saavedra 4600 (en intersección con Av. Circunvalación), Ciudad de Formosa
+                    </span>
+                    <span class="flex items-center gap-1 font-medium text-gray-700">
+                        <span class="material-symbols-outlined text-sm text-primary">schedule</span>
+                        Lun a Vie: 08:00 - 18:00 hs | Sáb: 08:30 - 13:00 hs
+                    </span>
+                </div>
+            </div>
+        </div>
+    @elseif($pedido->estado === 'PENDIENTE')
+        <div class="mb-6 p-5 bg-amber-50 border border-amber-300 text-amber-900 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+            <div class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-amber-600 text-2xl flex-shrink-0 mt-0.5">schedule</span>
+                <div class="text-sm">
+                    <strong class="font-bold block mb-0.5">Pedido Pendiente de Pago</strong>
+                    <span>Tu compra está reservada en el sistema. Puedes completar el pago a través de Mercado Pago para procesar la entrega.</span>
+                </div>
+            </div>
+            <a href="{{ route('pedidos.pago', $pedido->id) }}" class="inline-flex items-center gap-2 bg-[#009ee3] hover:bg-[#0082ba] text-white px-5 py-2.5 rounded-lg text-xs font-bold transition-colors shadow-sm shrink-0">
+                <span class="material-symbols-outlined text-base">payments</span>
+                Pagar con Mercado Pago
+            </a>
         </div>
     @endif
 
@@ -191,6 +225,42 @@
 
         <!-- Columna Derecha: Resumen Financiero y Acciones -->
         <div class="lg:col-span-4 space-y-6">
+            @if($pedido->pago)
+                <div class="bg-surface-bright border border-[#009ee3]/40 rounded-xl p-5 shadow-sm bg-[#009ee3]/5">
+                    <h3 class="text-xs font-bold text-[#009ee3] uppercase tracking-wider mb-3 pb-2 border-b border-[#009ee3]/20 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-base">account_balance_wallet</span>
+                        Comprobante Mercado Pago
+                    </h3>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="text-on-surface-variant">Estado:</span>
+                            <span class="inline-flex items-center gap-1 font-bold text-green-800 bg-green-100 px-2 py-0.5 rounded-full text-[11px]">
+                                <span class="material-symbols-outlined text-xs">done</span> Acreditado
+                            </span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-on-surface-variant">Transacción MP:</span>
+                            <span class="font-mono font-bold text-on-surface select-all">{{ $pedido->pago->id_transaccion_mp }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-on-surface-variant">Fecha:</span>
+                            <span class="font-semibold text-on-surface">{{ \Carbon\Carbon::parse($pedido->pago->fecha_pago)->format('d/m/Y') }}</span>
+                        </div>
+                        <div class="flex justify-between items-baseline pt-1 border-t border-outline-variant/30">
+                            <span class="text-on-surface-variant">Abonado:</span>
+                            <span class="font-bold text-base text-primary">${{ number_format($pedido->pago->monto, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="pt-3 mt-1 border-t border-[#009ee3]/20 space-y-2">
+                            <a href="{{ route('pedidos.comprobante', $pedido->id) }}" target="_blank" class="w-full inline-flex items-center justify-center gap-1.5 bg-[#009ee3] hover:bg-[#007eb5] text-white py-2 px-3 rounded-lg text-xs font-bold transition-colors shadow-xs">
+                                <span class="material-symbols-outlined text-sm">picture_as_pdf</span>
+                                <span>Ver Comprobante Oficial (PDF)</span>
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <div class="bg-surface-bright border border-outline-variant rounded-xl p-6 shadow-sm sticky top-24">
                 <h2 class="text-base font-bold text-on-surface mb-4 pb-2 border-b border-outline-variant flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary">receipt</span>

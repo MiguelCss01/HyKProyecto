@@ -66,10 +66,11 @@
                                 <td class="py-4 px-6">
                                     @php
                                         $color = 'bg-surface-variant text-on-surface-variant';
-                                        if ($pedido->estado == 'pendiente') $color = 'bg-error-container text-on-error-container';
-                                        if (in_array($pedido->estado, ['aprobado', 'en_preparacion', 'listo_retiro'])) $color = 'bg-primary-fixed text-on-primary-fixed';
-                                        if ($pedido->estado == 'entregado') $color = 'bg-secondary-container text-on-secondary-container';
-                                        if (in_array($pedido->estado, ['rechazado', 'cancelado'])) $color = 'bg-error text-on-error';
+                                        $estadoUpper = strtoupper($pedido->estado);
+                                        if (in_array($estadoUpper, ['PENDIENTE'])) $color = 'bg-error-container text-on-error-container';
+                                        if (in_array($estadoUpper, ['APROBADO', 'PAGADO', 'EN_PREPARACION', 'LISTO_RETIRO'])) $color = 'bg-primary-fixed text-on-primary-fixed';
+                                        if (in_array($estadoUpper, ['ENTREGADO'])) $color = 'bg-secondary-container text-on-secondary-container';
+                                        if (in_array($estadoUpper, ['RECHAZADO', 'CANCELADO'])) $color = 'bg-error text-on-error';
                                     @endphp
                                     <span class="inline-flex {{ $color }} px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide">
                                         {{ str_replace('_', ' ', $pedido->estado) }}

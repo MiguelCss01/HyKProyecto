@@ -185,13 +185,36 @@
                     </div>
                 </div>
 
-                <!-- Formulario de Confirmación Definitiva -->
+                <!-- Bloque Método de Pago Mercado Pago -->
+                <div class="mt-5 p-4 rounded-xl border-2 border-[#009ee3]/30 bg-[#009ee3]/5">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#009ee3] text-2xl">account_balance_wallet</span>
+                            <span class="font-bold text-sm text-on-surface">Mercado Pago</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-[#009ee3] bg-[#009ee3]/10 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                            Pasarela Oficial
+                        </span>
+                    </div>
+                    <p class="text-xs text-on-surface-variant leading-relaxed">
+                        Abona con dinero en cuenta, tarjetas de débito o crédito a través del entorno seguro de Mercado Pago.
+                    </p>
+                    <div class="mt-2.5 flex items-center gap-1.5 text-[11px] font-medium text-green-700">
+                        <span class="material-symbols-outlined text-sm">verified_user</span>
+                        <span>Pago 100% protegido y cifrado</span>
+                    </div>
+                </div>
+
+                <!-- Formulario de Confirmación y Redirección a Mercado Pago -->
                 <form action="{{ route('pedidos.confirmar') }}" method="POST" class="mt-6">
                     @csrf
-                    <button type="submit" class="w-full bg-secondary text-on-secondary font-bold py-3.5 px-4 rounded-lg hover:bg-[#00531a] transition-colors flex items-center justify-center gap-2 shadow-md">
-                        <span class="material-symbols-outlined text-xl">check_circle</span>
-                        Confirmar Pedido Definitivo
+                    <button type="submit" class="w-full bg-[#009ee3] hover:bg-[#0082ba] text-white font-bold py-3.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-md">
+                        <span class="material-symbols-outlined text-xl">payments</span>
+                        Confirmar y Pagar con Mercado Pago
                     </button>
+                    <p class="text-[11px] text-center text-on-surface-variant mt-2">
+                        Al presionar el botón serás redirigido a la pasarela de Mercado Pago.
+                    </p>
                 </form>
 
                 <a href="{{ route('carrito.index') }}" class="w-full mt-3 text-center text-xs font-bold text-on-surface-variant hover:text-primary hover:underline block">

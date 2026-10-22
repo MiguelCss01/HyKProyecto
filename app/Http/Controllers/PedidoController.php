@@ -6,6 +6,7 @@ use App\Models\DetallePedido;
 use App\Models\Pedido;
 use App\Models\Producto;
 use App\Services\CartService;
+use App\Services\MercadoPagoService;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,7 +17,8 @@ use Illuminate\View\View;
 class PedidoController extends Controller
 {
     public function __construct(
-        protected CartService $cartService
+        protected CartService $cartService,
+        protected MercadoPagoService $mercadoPagoService
     ) {}
 
     /**
@@ -42,7 +44,8 @@ class PedidoController extends Controller
     }
 
     /**
-     * Procesa la confirmación definitiva del pedido, descontando stock y vaciando el carrito.
+     * Procesa la confirmación del pedido, reserva stock, vacía el carrito
+     * y redirige al flujo de pago de Mercado Pago.
      */
     public function confirmar(Request $request): RedirectResponse
     {
@@ -78,7 +81,7 @@ class PedidoController extends Controller
                     }
                 }
 
-                // Crear el Pedido
+                // Crear el Pedido en estado PENDIENTE
                 $pedido = Pedido::create([
                     'fecha_pedido' => now(),
                     'total' => $cart['total'],
@@ -108,11 +111,114 @@ class PedidoController extends Controller
                 return $pedido;
             });
 
-            return redirect()->route('pedido.exito', $pedido->id)
-                ->with('success', '¡Tu pedido ha sido confirmado con éxito!');
+            // Redirigir a la pantalla de pago de Mercado Pago, donde se muestra el resumen,
+            // las credenciales de prueba y el enlace/redirección al Checkout Oficial de Mercado Pago
+            return redirect()->route('pedidos.pago', $pedido->id);
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * Muestra la pantalla de pago y el acceso al Checkout oficial de Mercado Pago.
+     */
+    public function mostrarPago(int $id): View|RedirectResponse
+    {
+        $pedido = Pedido::with(['detalles.presentacionProducto.producto.categoria', 'user', 'pago'])
+            ->where('user_id', Auth::id())
+            ->findOrFail($id);
+
+        if ($pedido->estado === 'PAGADO' || $pedido->pago !== null) {
+            return redirect()->route('pedido.exito', $pedido->id)
+                ->with('info', 'Este pedido ya cuenta con un pago acreditado.');
+        }
+
+        $initPoint = null;
+        $errorMp = null;
+
+        // Generar la preferencia en la API oficial de Mercado Pago
+        if (! empty(config('services.mercadopago.access_token'))) {
+            try {
+                $preferencia = $this->mercadoPagoService->crearPreferencia($pedido);
+                $initPoint = config('services.mercadopago.sandbox', true)
+                    ? ($preferencia['sandbox_init_point'] ?? $preferencia['init_point'])
+                    : $preferencia['init_point'];
+            } catch (Exception $e) {
+                $errorMp = $e->getMessage();
+            }
+        }
+
+        $credenciales = $this->mercadoPagoService->obtenerCredencialesTest();
+
+        return view('pedidos.mercadopago', compact('pedido', 'credenciales', 'initPoint', 'errorMp'));
+    }
+
+    /**
+     * Procesa y registra el pago ficticio a través de Mercado Pago.
+     */
+    public function procesarPago(Request $request, int $id): RedirectResponse
+    {
+        $pedido = Pedido::where('user_id', Auth::id())->findOrFail($id);
+
+        try {
+            $this->mercadoPagoService->procesarPagoFicticio($pedido, [
+                'id_transaccion_mp' => $request->input('id_transaccion_mp'),
+                'metodo_pago' => $request->input('metodo_pago', 'cuenta_mp'),
+            ]);
+
+            return redirect()->route('pedido.exito', $pedido->id)
+                ->with('success', '¡Pago procesado con éxito por Mercado Pago!');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error al procesar el pago: '.$e->getMessage());
+        }
+    }
+
+    /**
+     * Retorno automático desde el verdadero Mercado Pago tras completar o procesar el pago.
+     */
+    public function retornoMercadoPago(Request $request): RedirectResponse
+    {
+        $pedidoId = $request->input('external_reference');
+        $status = strtolower($request->input('status') ?? $request->input('collection_status') ?? '');
+        $paymentId = $request->input('payment_id') ?? $request->input('collection_id');
+
+        $baseUrl = rtrim(config('app.url'), '/');
+
+        if (! $pedidoId) {
+            return redirect()->to($baseUrl.'/mis-pedidos')
+                ->with('error', 'No se pudo identificar la referencia del pedido devuelto por Mercado Pago.');
+        }
+
+        $pedido = Pedido::with('user')->findOrFail($pedidoId);
+
+        // Si el usuario está autenticado, validar que sea el dueño del pedido
+        if (Auth::check() && $pedido->user_id !== Auth::id()) {
+            abort(403, 'No autorizado para gestionar este pedido.');
+        }
+
+        // Si el retorno llega desde Mercado Pago sin sesión en este host/puerto, autenticar con el usuario del pedido
+        if (Auth::guest() && $pedido->user) {
+            Auth::login($pedido->user);
+        }
+
+        if ($status === 'approved') {
+            $this->mercadoPagoService->registrarPagoAprobado(
+                $pedido,
+                (string) ($paymentId ?? 'MP-'.mt_rand(1000000000, 9999999999)),
+                (float) $pedido->total
+            );
+
+            return redirect()->to($baseUrl.'/pedidos/'.$pedido->id.'/exito')
+                ->with('success', '¡Tu pago ha sido acreditado exitosamente por Mercado Pago!');
+        }
+
+        if ($status === 'in_process' || $status === 'pending') {
+            return redirect()->to($baseUrl.'/mis-pedidos/'.$pedido->id)
+                ->with('info', 'Tu pago se encuentra en proceso de validación en Mercado Pago.');
+        }
+
+        return redirect()->to($baseUrl.'/mis-pedidos/'.$pedido->id)
+            ->with('error', 'El pago no fue completado o fue cancelado en Mercado Pago.');
     }
 
     /**
@@ -120,7 +226,7 @@ class PedidoController extends Controller
      */
     public function misPedidos(): View
     {
-        $pedidos = Pedido::with(['detalles.presentacionProducto.producto'])
+        $pedidos = Pedido::with(['detalles.presentacionProducto.producto', 'pago'])
             ->where('user_id', Auth::id())
             ->latest('id')
             ->paginate(10);
@@ -133,7 +239,7 @@ class PedidoController extends Controller
      */
     public function show(int $id): View
     {
-        $pedido = Pedido::with(['detalles.presentacionProducto.producto.categoria', 'user'])
+        $pedido = Pedido::with(['detalles.presentacionProducto.producto.categoria', 'user', 'pago'])
             ->where('user_id', Auth::id())
             ->findOrFail($id);
 
@@ -141,14 +247,29 @@ class PedidoController extends Controller
     }
 
     /**
-     * Muestra la pantalla de éxito y comprobante del pedido confirmado.
+     * Muestra la pantalla de éxito y comprobante del pedido confirmado con información de pago y aviso de retiro.
      */
     public function exito(int $id): View
     {
-        $pedido = Pedido::with(['detalles.presentacionProducto.producto.categoria', 'user'])
+        $pedido = Pedido::with(['detalles.presentacionProducto.producto.categoria', 'user', 'pago'])
             ->where('user_id', Auth::id())
             ->findOrFail($id);
 
         return view('pedidos.exito', compact('pedido'));
+    }
+
+    /**
+     * Muestra el comprobante oficial del pedido en formato imprimible/PDF.
+     */
+    public function comprobante(int $id): View
+    {
+        $pedido = Pedido::with(['detalles.presentacionProducto.producto.categoria', 'user', 'pago'])
+            ->findOrFail($id);
+
+        if (Auth::user()->role !== 'admin' && $pedido->user_id !== Auth::id()) {
+            abort(403, 'No autorizado para ver este comprobante.');
+        }
+
+        return view('pedidos.comprobante', compact('pedido'));
     }
 }

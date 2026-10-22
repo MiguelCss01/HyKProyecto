@@ -15,7 +15,7 @@ class AdminController extends Controller
         $bajoStock = Producto::whereColumn('stock_actual', '<=', 'stock_minimo')->count();
         $pedidosPendientes = Pedido::where('estado', 'pendiente')->count();
         $ingresosHoy = Pedido::whereDate('created_at', today())->sum('total');
-        
+
         // Tablas resumen
         $ultimosPedidos = Pedido::with('user')->orderBy('created_at', 'desc')->take(5)->get();
         $nuevosClientes = User::where('role', 'cliente')->orderBy('created_at', 'desc')->take(5)->get();

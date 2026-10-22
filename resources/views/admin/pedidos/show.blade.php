@@ -49,13 +49,12 @@
                     <div class="w-full">
                         <label class="block text-xs text-on-surface-variant font-bold mb-2">Estado actual del pedido</label>
                         <select name="estado" class="w-full border-outline-variant rounded-md shadow-sm focus:border-primary focus:ring-primary text-sm font-medium">
-                            <option value="pendiente" {{ $pedido->estado == 'pendiente' ? 'selected' : '' }}>Pendiente (Esperando Pago)</option>
-                            <option value="aprobado" {{ $pedido->estado == 'aprobado' ? 'selected' : '' }}>Aprobado / Pagado</option>
-                            <option value="rechazado" {{ $pedido->estado == 'rechazado' ? 'selected' : '' }}>Pago Rechazado</option>
-                            <option value="en_preparacion" {{ $pedido->estado == 'en_preparacion' ? 'selected' : '' }}>En Preparación</option>
-                            <option value="listo_retiro" {{ $pedido->estado == 'listo_retiro' ? 'selected' : '' }}>Listo para Retirar</option>
-                            <option value="entregado" {{ $pedido->estado == 'entregado' ? 'selected' : '' }}>Completado / Entregado</option>
-                            <option value="cancelado" {{ $pedido->estado == 'cancelado' ? 'selected' : '' }}>Cancelado</option>
+                            <option value="PENDIENTE" {{ in_array(strtoupper($pedido->estado), ['PENDIENTE']) ? 'selected' : '' }}>Pendiente (Esperando Pago)</option>
+                            <option value="PAGADO" {{ in_array(strtoupper($pedido->estado), ['PAGADO', 'APROBADO']) ? 'selected' : '' }}>Pagado / Acreditado</option>
+                            <option value="EN_PREPARACION" {{ strtoupper($pedido->estado) == 'EN_PREPARACION' ? 'selected' : '' }}>En Preparación</option>
+                            <option value="LISTO_RETIRO" {{ strtoupper($pedido->estado) == 'LISTO_RETIRO' ? 'selected' : '' }}>Listo para Retirar en Sucursal</option>
+                            <option value="ENTREGADO" {{ strtoupper($pedido->estado) == 'ENTREGADO' ? 'selected' : '' }}>Completado / Entregado</option>
+                            <option value="CANCELADO" {{ in_array(strtoupper($pedido->estado), ['CANCELADO', 'RECHAZADO']) ? 'selected' : '' }}>Cancelado</option>
                         </select>
                     </div>
                     
@@ -64,6 +63,36 @@
                     </button>
                 </form>
             </div>
+
+            <!-- Tarjeta Información de Pago Mercado Pago si existe -->
+            @if($pedido->pago)
+                <div class="md:col-span-3 bg-surface-bright rounded-xl shadow-sm border border-[#009ee3]/40 p-5 bg-[#009ee3]/5">
+                    <h3 class="font-label-md uppercase text-[#009ee3] tracking-wider text-xs font-bold mb-3 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm text-[#009ee3]">account_balance_wallet</span> 
+                        Información del Pago (Mercado Pago)
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
+                        <div>
+                            <span class="text-on-surface-variant block">Estado del Pago:</span>
+                            <span class="inline-flex items-center gap-1 font-bold text-green-800 bg-green-100 px-2.5 py-0.5 rounded-full text-[11px] mt-1">
+                                <span class="material-symbols-outlined text-xs">done</span> Acreditado
+                            </span>
+                        </div>
+                        <div>
+                            <span class="text-on-surface-variant block">N° Transacción MP:</span>
+                            <span class="font-mono font-bold text-on-surface select-all text-xs mt-1 block">{{ $pedido->pago->id_transaccion_mp }}</span>
+                        </div>
+                        <div>
+                            <span class="text-on-surface-variant block">Fecha del Pago:</span>
+                            <span class="font-semibold text-on-surface text-xs mt-1 block">{{ \Carbon\Carbon::parse($pedido->pago->fecha_pago)->format('d/m/Y') }}</span>
+                        </div>
+                        <div>
+                            <span class="text-on-surface-variant block">Monto Total Abonado:</span>
+                            <span class="font-bold text-primary text-sm mt-1 block">${{ number_format($pedido->pago->monto, 0, ',', '.') }}</span>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
 
         <!-- Tarjeta de Detalles del Pedido -->

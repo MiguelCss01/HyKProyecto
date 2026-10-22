@@ -41,4 +41,20 @@ class Pedido extends Model
     {
         return $this->hasMany(DetallePedido::class);
     }
+
+    /**
+     * Pago registrado para el pedido.
+     */
+    public function pago()
+    {
+        return $this->hasOne(Pago::class);
+    }
+
+    /**
+     * Pagos registrados para el pedido.
+     */
+    public function pagos()
+    {
+        return $this->hasMany(Pago::class);
+    }
 }
