@@ -128,6 +128,14 @@ class PedidoController extends Controller
             ->where('user_id', Auth::id())
             ->findOrFail($id);
 
+        if ($pedido->estado !== 'PAGADO' && $pedido->pago === null) {
+            $pagoVerificado = $this->mercadoPagoService->verificarPagoPorReferencia($pedido);
+            if ($pagoVerificado !== null) {
+                return redirect()->route('pedido.exito', $pedido->id)
+                    ->with('success', '¡Tu pago ha sido acreditado exitosamente por Mercado Pago!');
+            }
+        }
+
         if ($pedido->estado === 'PAGADO' || $pedido->pago !== null) {
             return redirect()->route('pedido.exito', $pedido->id)
                 ->with('info', 'Este pedido ya cuenta con un pago acreditado.');
@@ -226,6 +234,14 @@ class PedidoController extends Controller
      */
     public function misPedidos(): View
     {
+        $pedidosPendientes = Pedido::where('user_id', Auth::id())
+            ->where('estado', 'PENDIENTE')
+            ->get();
+
+        foreach ($pedidosPendientes as $pendiente) {
+            $this->mercadoPagoService->verificarPagoPorReferencia($pendiente);
+        }
+
         $pedidos = Pedido::with(['detalles.presentacionProducto.producto', 'pago'])
             ->where('user_id', Auth::id())
             ->latest('id')
@@ -242,6 +258,13 @@ class PedidoController extends Controller
         $pedido = Pedido::with(['detalles.presentacionProducto.producto.categoria', 'user', 'pago'])
             ->where('user_id', Auth::id())
             ->findOrFail($id);
+
+        if ($pedido->estado === 'PENDIENTE' && $pedido->pago === null) {
+            $pagoVerificado = $this->mercadoPagoService->verificarPagoPorReferencia($pedido);
+            if ($pagoVerificado !== null) {
+                $pedido->refresh()->load(['detalles.presentacionProducto.producto.categoria', 'user', 'pago']);
+            }
+        }
 
         return view('pedidos.show', compact('pedido'));
     }

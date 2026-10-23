@@ -65,19 +65,7 @@ class MercadoPagoService
             ];
         }
 
-        $backUrl = config('services.mercadopago.back_url');
-
-        if (empty($backUrl)) {
-            $appUrl = config('app.url');
-            // En entorno local XAMPP (cuando se sirve por http://localhost:8000),
-            // Mercado Pago exige obligatoriamente HTTPS para almacenar back_urls y procesar auto_return.
-            // Apache en XAMPP responde por SSL en https://localhost/HyKProyecto/public.
-            if (str_starts_with($appUrl, 'http://localhost') || str_starts_with($appUrl, 'http://127.0.0.1')) {
-                $backUrl = 'https://localhost/HyKProyecto/public/pedidos/retorno-mercadopago';
-            } else {
-                $backUrl = route('pedidos.retorno-mp');
-            }
-        }
+        $backUrl = $this->resolverBackUrl();
 
         $payload = [
             'items' => $items,
@@ -88,7 +76,7 @@ class MercadoPagoService
                 'pending' => $backUrl,
             ],
             'external_reference' => (string) $pedido->id,
-            'statement_descriptor' => 'HyK Mayorista',
+            'statement_descriptor' => 'HYK MAYORISTA',
         ];
 
         // Mercado Pago exige HTTPS para auto_return. Si la URL es HTTPS, lo activamos.
@@ -115,6 +103,101 @@ class MercadoPagoService
         }
 
         return $response->json();
+    }
+
+    /**
+     * Resuelve la URL de retorno (back_url) garantizando HTTPS en desarrollo local para que Mercado Pago habilite auto_return.
+     */
+    public function resolverBackUrl(): string
+    {
+        $backUrl = config('services.mercadopago.back_url');
+
+        if (! empty($backUrl)) {
+            return (string) $backUrl;
+        }
+
+        $appUrl = (string) config('app.url');
+
+        // En entorno local (cuando se sirve por http://localhost:8000),
+        // Mercado Pago exige obligatoriamente HTTPS para almacenar back_urls y procesar auto_return.
+        // Detectamos automáticamente si Apache en XAMPP responde por SSL en el puerto 4433 o 443.
+        if (str_starts_with($appUrl, 'http://localhost') || str_starts_with($appUrl, 'http://127.0.0.1')) {
+            if (! app()->runningUnitTests() && $this->puertoLocalActivo(4433) && ! $this->puertoLocalActivo(443)) {
+                return 'https://localhost:4433/HyKProyecto/public/pedidos/retorno-mercadopago';
+            }
+
+            return 'https://localhost/HyKProyecto/public/pedidos/retorno-mercadopago';
+        }
+
+        return route('pedidos.retorno-mp');
+    }
+
+    /**
+     * Verifica si un puerto TCP local se encuentra escuchando conexiones.
+     */
+    protected function puertoLocalActivo(int $port): bool
+    {
+        $connection = @fsockopen('127.0.0.1', $port, $errno, $errstr, 0.15);
+
+        if (is_resource($connection)) {
+            fclose($connection);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Consulta en la API de Mercado Pago si ya existe un pago aprobado para el pedido
+     * y, en caso afirmativo, lo acredita automáticamente en la base de datos.
+     */
+    public function verificarPagoPorReferencia(Pedido $pedido): ?Pago
+    {
+        if ($pedido->estado === 'PAGADO' || $pedido->pago !== null) {
+            return $pedido->pago;
+        }
+
+        $accessToken = config('services.mercadopago.access_token');
+
+        if (empty($accessToken) || app()->runningUnitTests()) {
+            return null;
+        }
+
+        try {
+            $httpClient = Http::withToken($accessToken)->acceptJson()->timeout(4);
+
+            if (app()->environment('local', 'testing')) {
+                $httpClient = $httpClient->withoutVerifying();
+            }
+
+            $response = $httpClient->get('https://api.mercadopago.com/v1/payments/search', [
+                'external_reference' => (string) $pedido->id,
+                'sort' => 'date_created',
+                'criteria' => 'desc',
+            ]);
+
+            if ($response->successful()) {
+                $results = $response->json('results', []);
+
+                foreach ($results as $payment) {
+                    if (($payment['status'] ?? '') === 'approved') {
+                        return $this->registrarPagoAprobado(
+                            $pedido,
+                            (string) $payment['id'],
+                            isset($payment['transaction_amount']) ? (float) $payment['transaction_amount'] : (float) $pedido->total
+                        );
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            Log::warning('No se pudo verificar estado de pago en Mercado Pago', [
+                'pedido_id' => $pedido->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return null;
     }
 
     /**
