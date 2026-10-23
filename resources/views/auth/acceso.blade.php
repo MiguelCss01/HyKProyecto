@@ -200,7 +200,7 @@
     <!-- PANEL DE IMAGEN ANIMADO (OVERLAY)          -->
     <!-- ========================================== -->
     <div id="sliding-overlay" class="hidden lg:flex absolute top-0 left-0 w-1/2 h-full bg-cover bg-center transition-transform duration-700 ease-in-out z-10 shadow-2xl" 
-         style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCygL2ZE5I_RzjF7y1dZc0VRR7uR-uNlKRYK2Ys0DkqO2cyzebYqEQDq-CVU9VWfGLEeWkhcEDvqmUVm6ybrkiQqTNWv80p6xSSAZP7gR8bQ_-F2Awipp1e6-jxwOfo1A3p7KACGABs9v-577KuoESHsUtvnoXzbSiZhOGsMnwZtPrw9VsdKgviBVq7NFf63z3OhveXDDCIeUWYMS6KPC4m9OwFSmlAOUMwYOA8YD2UGRQWT-elX-bT')">
+         style="background-image: url('{{ asset('images/fondo-login.jpeg') }}')">
         
         <!-- Gradiente oscuro para leer el texto -->
         <div class="absolute inset-0 bg-gradient-to-t from-primary/90 to-primary/20 mix-blend-multiply"></div>
