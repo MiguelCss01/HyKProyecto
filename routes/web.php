@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\CatalogoController;
+use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\PerfilController;
@@ -68,4 +69,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('productos', ProductoController::class);
     Route::resource('usuarios', UserController::class)->only(['index', 'destroy']);
     Route::resource('pedidos', App\Http\Controllers\Admin\PedidoController::class)->only(['index', 'show', 'update']);
+});
+
+// Rutas del Asistente Virtual con IA (RF 5 / RF 5.1)
+Route::prefix('chatbot')->name('chatbot.')->group(function () {
+    Route::get('/historial', [ChatbotController::class, 'history'])->name('history');
+    Route::post('/mensaje', [ChatbotController::class, 'sendMessage'])->name('send')->middleware('throttle:30,1');
+    Route::post('/limpiar', [ChatbotController::class, 'clearSession'])->name('clear');
+    Route::post('/agregar-carrito', [ChatbotController::class, 'quickAddToCart'])->name('add-cart');
 });

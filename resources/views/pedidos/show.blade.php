@@ -309,5 +309,6 @@
 @auth
     <x-modal-logout />
 @endauth
+<x-chatbot-widget />
 </body>
 </html>

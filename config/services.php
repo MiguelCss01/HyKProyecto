@@ -42,4 +42,15 @@ return [
         'back_url' => env('MERCADOPAGO_BACK_URL', null),
     ],
 
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY', ''),
+        'model' => env('GEMINI_MODEL', 'gemini-3.5-flash'),
+    ],
+
+    'hyk' => [
+        'whatsapp' => env('HYK_WHATSAPP_NUMBER', '5493704000000'),
+        'direccion' => 'Calle Saavedra 4600 (en intersección con Av. Circunvalación), Ciudad de Formosa',
+        'horarios' => 'Lunes a Viernes de 08:00 a 18:00 hs y Sábados de 08:30 a 13:00 hs',
+    ],
+
 ];

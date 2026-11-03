@@ -804,5 +804,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>
+<x-chatbot-widget />
 </body>
 </html>

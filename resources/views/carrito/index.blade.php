@@ -308,5 +308,6 @@
     <x-modal-logout />
 @endauth
 <x-modal-confirm-delete />
+<x-chatbot-widget />
 </body>
 </html>
