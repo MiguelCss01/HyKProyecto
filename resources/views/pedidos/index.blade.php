@@ -7,8 +7,10 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet"/>
 
     <script id="tailwind-config">
         tailwind.config = {
@@ -31,6 +33,7 @@
                     },
                     fontFamily: {
                         sans: ["Inter", "sans-serif"],
+                        display: ["Oswald", "sans-serif"],
                     }
                 }
             }
@@ -42,9 +45,8 @@
 <!-- TopNavBar -->
 <header class="h-16 bg-surface-bright border-b border-outline-variant flex items-center justify-between px-4 md:px-8 sticky top-0 z-50">
     <div class="flex items-center gap-3">
-        <a href="{{ route('catalogo') }}" class="flex items-center gap-2 text-primary font-bold text-xl tracking-tight">
-            <span class="material-symbols-outlined text-2xl">storefront</span>
-            HyK Mayorista
+        <a href="{{ route('catalogo') }}" class="flex items-center shrink-0 transition-transform hover:scale-[1.01] py-1" title="HyK Mayorista">
+            <img src="{{ asset('images/logo-hyk-1.png') }}" alt="HyK Mayorista" class="h-9 sm:h-10 md:h-11 lg:h-12 w-auto max-w-[190px] sm:max-w-[260px] md:max-w-[340px] lg:max-w-[390px] object-contain select-none mix-blend-multiply">
         </a>
     </div>
 
@@ -74,7 +76,7 @@
             <span class="hidden md:inline text-sm font-bold text-on-surface-variant">
                 Hola, {{ auth()->user()->name }}
             </span>
-            <button type="button" onclick="openLogoutModal()" class="text-xs font-bold text-red-600 hover:underline cursor-pointer">Salir</button>
+            <button type="button" onclick="openLogoutModal()" class="text-sm font-bold text-red-600 hover:underline cursor-pointer">Salir</button>
         @endauth
     </div>
 </header>
@@ -90,7 +92,7 @@
         </div>
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h1 class="text-2xl md:text-3xl font-bold text-on-surface flex items-center gap-2">
+                <h1 class="font-display uppercase tracking-wide text-2xl md:text-3xl font-bold text-on-surface flex items-center gap-2 leading-tight">
                     <span class="material-symbols-outlined text-3xl text-primary">receipt_long</span>
                     Historial de Mis Pedidos
                 </h1>
