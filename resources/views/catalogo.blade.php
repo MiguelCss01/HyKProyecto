@@ -5,8 +5,11 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>HyK Mayorista - Portal de Compras</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+<link href="https://fonts.cdnfonts.com/css/headingnow-trial" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -14,45 +17,116 @@
           extend: {
             colors: {
               "surface-container-highest": "#e1e3e4", "on-surface": "#191c1d", "tertiary-container": "#454e55",
-              "on-tertiary-container": "#b6bfc8", "on-secondary-container": "#007327", "surface-bright": "#f8f9fa",
-              "primary": "#00317e", "tertiary-fixed-dim": "#bfc8d0", "on-secondary": "#ffffff",
-              "outline-variant": "#c3c6d5", "secondary-fixed-dim": "#66df75", "surface-variant": "#e1e3e4",
-              "secondary-fixed": "#83fc8e", "on-background": "#191c1d", "inverse-primary": "#b2c5ff",
-              "inverse-on-surface": "#f0f1f2", "secondary-container": "#80f98b", "primary-container": "#0046ad",
-              "error": "#ba1a1a", "on-secondary-fixed-variant": "#00531a", "tertiary": "#2f373e",
-              "on-tertiary-fixed": "#141d23", "on-primary-fixed-variant": "#0040a0", "surface-tint": "#2559bf",
+              "on-tertiary-container": "#b6bfc8", "on-secondary-container": "#C6161B", "surface-bright": "#f8f9fa",
+              "primary": "#E31E24", "primary-hover": "#C6161B", "primary-light": "#FDF2F2", "primary-border": "#FCA5A5",
+              "tertiary-fixed-dim": "#bfc8d0", "on-secondary": "#ffffff",
+              "outline-variant": "#c3c6d5", "secondary-fixed-dim": "#fca5a5", "surface-variant": "#e1e3e4",
+              "secondary-fixed": "#fee2e2", "on-background": "#191c1d", "inverse-primary": "#fca5a5",
+              "inverse-on-surface": "#f0f1f2", "secondary-container": "#FDF2F2", "primary-container": "#C6161B",
+              "error": "#E31E24", "on-secondary-fixed-variant": "#7f1d1d", "tertiary": "#2f373e",
+              "on-tertiary-fixed": "#141d23", "on-primary-fixed-variant": "#991b1b", "surface-tint": "#E31E24",
               "inverse-surface": "#2e3132", "error-container": "#ffdad6", "surface-dim": "#d9dadb",
-              "on-error": "#ffffff", "primary-fixed": "#dae2ff", "on-error-container": "#93000a",
-              "surface-container-lowest": "#ffffff", "on-secondary-fixed": "#002106", "tertiary-fixed": "#dbe4ed",
-              "on-surface-variant": "#434653", "on-tertiary-fixed-variant": "#3f484f", "on-primary-fixed": "#001847",
-              "background": "#f8f9fa", "on-primary-container": "#a5bdff", "surface-container-low": "#f3f4f5",
+              "on-error": "#ffffff", "primary-fixed": "#fee2e2", "on-error-container": "#93000a",
+              "surface-container-lowest": "#ffffff", "on-secondary-fixed": "#7f1d1d", "tertiary-fixed": "#dbe4ed",
+              "on-surface-variant": "#434653", "on-tertiary-fixed-variant": "#3f484f", "on-primary-fixed": "#7f1d1d",
+              "background": "#f8f9fa", "on-primary-container": "#ffffff", "surface-container-low": "#f3f4f5",
               "outline": "#737784", "surface": "#f8f9fa", "surface-container-high": "#e7e8e9",
-              "secondary": "#006e25", "on-primary": "#ffffff", "surface-container": "#edeeef",
-              "primary-fixed-dim": "#b2c5ff", "on-tertiary": "#ffffff"
+              "secondary": "#E31E24", "on-primary": "#ffffff", "surface-container": "#edeeef",
+              "primary-fixed-dim": "#fca5a5", "on-tertiary": "#ffffff",
+              "brand-red": "#E31E24", "brand-redHover": "#C6161B", "brand-redLight": "#FDF2F2", "brand-redBorder": "#FCA5A5"
             },
             spacing: { "margin-mobile": "16px", "sm": "8px", "xs": "4px", "gutter": "20px", "xl": "40px", "lg": "24px", "margin-desktop": "64px", "md": "16px" },
-            fontFamily: { "headline-lg": ["Inter"], "label-md": ["Inter"], "body-sm": ["Inter"], "price-display": ["Inter"], "headline-sm": ["Inter"], "body-md": ["Inter"] }
+            fontFamily: {
+              "sans": ["Inter", "sans-serif"],
+              "display": ["Oswald", "sans-serif"],
+              "headline-lg": ["Oswald", "sans-serif"],
+              "headline-md": ["Oswald", "sans-serif"],
+              "headline-sm": ["Oswald", "sans-serif"],
+              "label-md": ["Inter", "sans-serif"],
+              "body-sm": ["Inter", "sans-serif"],
+              "price-display": ["Inter", "sans-serif"],
+              "body-md": ["Inter", "sans-serif"]
+            }
           }
         }
       }
 </script>
 <style>
+  @font-face {
+    font-family: 'Heading Now';
+    src: local('Heading Now 64 Regular'),
+         local('Heading Now Regular'),
+         local('HeadingNow Trial 64 Regular'),
+         local('Heading Now 71-78'),
+         url('https://fonts.cdnfonts.com/s/103092/HeadingNowTrial64Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Heading Now';
+    src: local('Heading Now 66 Bold'),
+         local('Heading Now 76 Bold'),
+         local('Heading Now Bold'),
+         local('HeadingNow Trial 66 Bold'),
+         url('https://fonts.cdnfonts.com/s/103092/HeadingNowTrial66Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  .font-heading-now {
+    font-family: 'Heading Now', 'Heading Now 71-78', 'HeadingNow Trial', 'Heading Now Trial', sans-serif !important;
+  }
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined' !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none !important;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga' !important;
+    font-feature-settings: 'liga' !important;
+    -webkit-font-smoothing: antialiased;
+  }
+  #search-input-desktop,
+  #search-input-mobile {
+    font-family: 'Heading Now', 'Heading Now 71-78', 'HeadingNow Trial', 'Heading Now Trial', sans-serif !important;
+    font-weight: 400 !important;
+  }
+  #search-input-desktop::placeholder,
+  #search-input-mobile::placeholder,
+  #search-input-desktop::-webkit-input-placeholder,
+  #search-input-mobile::-webkit-input-placeholder,
+  #search-input-desktop::-moz-placeholder,
+  #search-input-mobile::-moz-placeholder,
+  #search-input-desktop:-ms-input-placeholder,
+  #search-input-mobile:-ms-input-placeholder {
+    font-family: 'Heading Now', 'Heading Now 71-78', 'HeadingNow Trial', 'Heading Now Trial', sans-serif !important;
+    font-weight: 400 !important;
+    text-transform: none !important;
+  }
   .scrollbar-none::-webkit-scrollbar { display: none; }
   .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
 </head>
 <body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
 <!-- TopNavBar -->
-<header class="h-16 bg-surface dark:bg-inverse-surface border-b border-outline-variant dark:border-tertiary flex items-center justify-between px-margin-mobile md:px-margin-desktop sticky top-0 z-50">
-    <div class="flex items-center gap-sm">
+<header class="h-16 bg-white dark:bg-inverse-surface border-b border-outline-variant dark:border-tertiary flex items-center justify-between px-4 md:px-8 sticky top-0 z-50">
+    <div class="flex items-center gap-2 sm:gap-3 shrink-0">
         <button id="mobile-menu-btn" type="button" class="md:hidden p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full cursor-pointer transition-colors" aria-label="Abrir categorías">
-            <span class="material-symbols-outlined">menu</span>
+            <span class="material-symbols-outlined text-2xl">menu</span>
         </button>
-        <a href="/" class="font-headline-lg font-bold text-primary dark:text-primary-fixed-dim tracking-tight text-xl">HyK Mayorista</a>
+        <a href="/" class="flex items-center shrink-0 transition-transform hover:scale-[1.01] py-1" title="HyK Mayorista">
+            <img src="{{ asset('images/logo-hyk-1.png') }}" alt="HyK Mayorista" class="h-9 sm:h-10 md:h-11 lg:h-12 w-auto max-w-[190px] sm:max-w-[260px] md:max-w-[340px] lg:max-w-[390px] object-contain select-none mix-blend-multiply">
+        </a>
     </div>
     <div class="hidden md:flex flex-1 max-w-2xl mx-lg relative items-center">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-xl">search</span>
-        <input id="search-input-desktop" class="w-full pl-10 pr-10 py-2 bg-surface-bright border border-outline-variant rounded focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body-md" placeholder="Buscar productos, marcas o códigos..." type="text" autocomplete="off"/>
+        <input id="search-input-desktop" class="w-full pl-10 pr-10 py-2 bg-surface-bright border border-outline-variant rounded focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-heading-now font-normal text-sm" placeholder="Buscar productos, marcas o códigos..." type="text" autocomplete="off"/>
         <button type="button" id="search-clear-desktop" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface p-1 rounded-full hover:bg-surface-container-high transition-colors cursor-pointer" title="Limpiar búsqueda">
             <span class="material-symbols-outlined text-base">close</span>
         </button>
@@ -61,26 +135,26 @@
         @auth
             <a href="{{ route('pedidos.index') }}" class="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:text-primary transition-colors mr-3" title="Ver mis pedidos">
                 <span class="material-symbols-outlined text-base text-slate-500">receipt_long</span>
-                Mis Pedidos
+                <span class="font-heading-now">Mis Pedidos</span>
             </a>
             <a href="{{ Route::has('perfil.index') ? route('perfil.index') : '#' }}" class="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:text-primary transition-colors mr-4" title="Ver mi perfil">
                 <span class="material-symbols-outlined text-base text-slate-500">person</span>
-                Mi Perfil
+                <span class="font-heading-now">Mi Perfil</span>
             </a>
-            <span class="hidden md:block mr-4 text-sm font-bold text-slate-800">Hola, {{ auth()->user()->name }}</span>
-            <button type="button" onclick="openLogoutModal()" class="text-sm font-bold text-red-600 hover:underline mr-4 cursor-pointer">Salir</button>
+            <span class="hidden md:block mr-4 text-sm font-bold text-slate-800 font-heading-now">Hola, {{ auth()->user()->name }}</span>
+            <button type="button" onclick="openLogoutModal()" class="text-sm font-bold text-red-600 hover:underline mr-4 cursor-pointer font-heading-now">Salir</button>
         @else
-            <a href="{{ route('login') }}" class="text-sm font-bold text-primary hover:underline mr-4">Ingresar / Registrarse</a>
+            <a href="{{ route('login') }}" class="text-sm font-bold text-[#00317e] hover:text-[#002255] hover:underline mr-4 font-heading-now" style="color: #00317e;">Ingresar / Registrarse</a>
         @endauth
 
         @php
             $conteoCarrito = app(\App\Services\CartService::class)->conteoTotal();
         @endphp
 
-        <a href="{{ route('carrito.index') }}" class="p-2 text-slate-700 hover:text-emerald-700 hover:bg-surface-container-low transition-colors rounded-full relative flex items-center justify-center" title="Ver Carrito de Compras">
+        <a href="{{ route('carrito.index') }}" class="p-2 text-slate-700 hover:text-primary hover:bg-surface-container-low transition-colors rounded-full relative flex items-center justify-center" title="Ver Carrito de Compras">
             <span class="material-symbols-outlined">shopping_cart</span>
             @if($conteoCarrito > 0)
-                <span class="absolute top-0 right-0 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-error text-on-error text-[10px] font-bold leading-none">
+                <span class="absolute top-0 right-0 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-primary text-on-primary text-[10px] font-bold leading-none">
                     {{ $conteoCarrito }}
                 </span>
             @else
@@ -98,7 +172,7 @@
     <div class="p-4 border-b border-outline-variant flex items-center justify-between bg-surface">
         <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-primary">category</span>
-            <span class="font-bold text-on-surface">Categorías</span>
+            <span class="font-display uppercase tracking-wide font-bold text-on-surface">Categorías</span>
         </div>
         <button type="button" id="mobile-drawer-close" class="p-1.5 rounded-full text-on-surface-variant hover:bg-surface-container cursor-pointer transition-colors" aria-label="Cerrar categorías">
             <span class="material-symbols-outlined">close</span>
@@ -118,31 +192,31 @@
             <li class="px-sm py-xs mb-1">
                 <a class="flex items-center gap-sm px-4 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-100 hover:text-slate-900 transition-all" href="{{ route('pedidos.index') }}">
                     <span class="material-symbols-outlined text-slate-500">receipt_long</span>
-                    <span>Mis Pedidos</span>
+                    <span class="font-heading-now">Mis Pedidos</span>
                 </a>
             </li>
             <li class="px-sm py-xs mb-2 border-b border-outline-variant/60 pb-2">
                 <a class="flex items-center gap-sm px-4 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-100 hover:text-slate-900 transition-all" href="{{ Route::has('perfil.index') ? route('perfil.index') : '#' }}">
                     <span class="material-symbols-outlined text-slate-500">person</span>
-                    <span>Mi Perfil</span>
+                    <span class="font-heading-now">Mi Perfil</span>
                 </a>
             </li>
         @endauth
         <li class="px-sm py-xs">
-            <button type="button" data-categoria-id="todas" class="categoria-btn w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-left font-semibold transition-all bg-primary text-white shadow-sm cursor-pointer">
+            <button type="button" data-categoria-id="todas" class="categoria-btn w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-left transition-all bg-primary text-white shadow-sm cursor-pointer">
                 <div class="flex items-center gap-sm">
                     <span class="material-symbols-outlined text-xl">apps</span>
-                    <span class="categoria-nombre">Todas las categorías</span>
+                    <span class="categoria-nombre font-heading-now font-bold">Todas las Categorías</span>
                 </div>
                 <span class="categoria-count text-xs bg-white/20 text-white font-bold px-2 py-0.5 rounded-full">{{ $productos->count() }}</span>
             </button>
         </li>
         @foreach($categorias as $cat)
             <li class="px-sm py-xs">
-                <button type="button" data-categoria-id="{{ $cat->id }}" class="categoria-btn w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-left text-on-surface-variant hover:bg-surface-container transition-all font-medium cursor-pointer">
+                <button type="button" data-categoria-id="{{ $cat->id }}" class="categoria-btn w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-left text-on-surface-variant hover:bg-surface-container transition-all cursor-pointer">
                     <div class="flex items-center gap-sm">
                         <span class="material-symbols-outlined text-xl">category</span>
-                        <span class="categoria-nombre">{{ $cat->nombre_categoria }}</span>
+                        <span class="categoria-nombre font-heading-now font-normal">{{ $cat->nombre_categoria }}</span>
                     </div>
                     <span class="categoria-count text-xs text-on-surface-variant/70 bg-surface-container-high px-2 py-0.5 rounded-full font-bold">{{ $cat->productos_count ?? $cat->productos->count() }}</span>
                 </button>
@@ -167,31 +241,31 @@
             <li class="px-sm py-xs mb-1">
                 <a class="flex items-center gap-sm px-4 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-100 hover:text-slate-900 transition-all" href="{{ route('pedidos.index') }}">
                     <span class="material-symbols-outlined text-slate-500">receipt_long</span>
-                    <span>Mis Pedidos</span>
+                    <span class="font-heading-now">Mis Pedidos</span>
                 </a>
             </li>
             <li class="px-sm py-xs mb-2 border-b border-outline-variant/60 pb-2">
                 <a class="flex items-center gap-sm px-4 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-100 hover:text-slate-900 transition-all" href="{{ Route::has('perfil.index') ? route('perfil.index') : '#' }}">
                     <span class="material-symbols-outlined text-slate-500">person</span>
-                    <span>Mi Perfil</span>
+                    <span class="font-heading-now">Mi Perfil</span>
                 </a>
             </li>
         @endauth
         <li class="px-sm py-xs">
-            <button type="button" data-categoria-id="todas" class="categoria-btn w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-left font-semibold transition-all bg-primary text-white shadow-sm cursor-pointer">
+            <button type="button" data-categoria-id="todas" class="categoria-btn w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-left transition-all bg-primary text-white shadow-sm cursor-pointer">
                 <div class="flex items-center gap-sm">
                     <span class="material-symbols-outlined text-xl">apps</span>
-                    <span class="categoria-nombre">Todas las categorías</span>
+                    <span class="categoria-nombre font-heading-now font-bold">Todas las Categorías</span>
                 </div>
                 <span class="categoria-count text-xs bg-white/20 text-white font-bold px-2 py-0.5 rounded-full">{{ $productos->count() }}</span>
             </button>
         </li>
         @foreach($categorias as $cat)
             <li class="px-sm py-xs">
-                <button type="button" data-categoria-id="{{ $cat->id }}" class="categoria-btn w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-left text-on-surface-variant hover:bg-surface-container transition-all font-medium cursor-pointer">
+                <button type="button" data-categoria-id="{{ $cat->id }}" class="categoria-btn w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-left text-on-surface-variant hover:bg-surface-container transition-all cursor-pointer">
                     <div class="flex items-center gap-sm">
                         <span class="material-symbols-outlined text-xl">category</span>
-                        <span class="categoria-nombre">{{ $cat->nombre_categoria }}</span>
+                        <span class="categoria-nombre font-heading-now font-normal">{{ $cat->nombre_categoria }}</span>
                     </div>
                     <span class="categoria-count text-xs text-on-surface-variant/70 bg-surface-container-high px-2 py-0.5 rounded-full font-bold">{{ $cat->productos_count ?? $cat->productos->count() }}</span>
                 </button>
@@ -228,7 +302,7 @@
         <div class="md:hidden mb-4 bg-surface-bright rounded-2xl shadow-sm border border-outline-variant p-2">
             <div class="relative w-full flex items-center">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-xl">search</span>
-                <input id="search-input-mobile" class="w-full pl-10 pr-10 py-2.5 bg-surface-bright border border-outline-variant rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm font-body-md" placeholder="Buscar productos, marcas o códigos..." type="text" autocomplete="off"/>
+                <input id="search-input-mobile" class="w-full pl-10 pr-10 py-2.5 bg-surface-bright border border-outline-variant rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm font-heading-now font-normal" placeholder="Buscar productos, marcas o códigos..." type="text" autocomplete="off"/>
                 <button type="button" id="search-clear-mobile" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface p-1 rounded-full hover:bg-surface-container-high transition-colors cursor-pointer" title="Limpiar búsqueda">
                     <span class="material-symbols-outlined text-base">close</span>
                 </button>
@@ -239,15 +313,15 @@
         <section>
             <!-- Category Pills Bar (Horizontal scrollable on mobile and desktop) -->
             <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none" id="category-pills-bar" style="-webkit-overflow-scrolling: touch;">
-                <button type="button" data-categoria-id="todas" class="categoria-pill flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all bg-primary text-white shadow-sm cursor-pointer">
+                <button type="button" data-categoria-id="todas" class="categoria-pill flex items-center gap-1.5 px-4 py-2 rounded-full text-xs whitespace-nowrap transition-all bg-primary text-white shadow-sm cursor-pointer">
                     <span class="material-symbols-outlined text-[16px]">apps</span>
-                    <span>Todas</span>
+                    <span class="font-heading-now font-bold">Todas las Categorías</span>
                     <span class="text-[11px] opacity-80 font-bold">({{ $productos->count() }})</span>
                 </button>
                 @foreach($categorias as $cat)
-                    <button type="button" data-categoria-id="{{ $cat->id }}" class="categoria-pill flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all bg-surface-container hover:bg-surface-container-high text-on-surface-variant cursor-pointer">
+                    <button type="button" data-categoria-id="{{ $cat->id }}" class="categoria-pill flex items-center gap-1.5 px-4 py-2 rounded-full text-xs whitespace-nowrap transition-all bg-surface-container hover:bg-surface-container-high text-on-surface-variant cursor-pointer">
                         <span class="material-symbols-outlined text-[16px]">category</span>
-                        <span>{{ $cat->nombre_categoria }}</span>
+                        <span class="font-heading-now font-normal">{{ $cat->nombre_categoria }}</span>
                         <span class="text-[11px] opacity-70 font-bold">({{ $cat->productos_count ?? $cat->productos->count() }})</span>
                     </button>
                 @endforeach
@@ -256,12 +330,12 @@
             <!-- Header Catálogo -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                 <div>
-                    <h1 class="text-2xl md:text-3xl font-bold text-on-surface tracking-tight">Catálogo de Productos</h1>
+                    <h1 class="font-display uppercase tracking-wide text-2xl md:text-3xl font-bold text-on-surface leading-tight">Catálogo de Productos</h1>
                     <div class="flex flex-wrap items-center gap-2 mt-1.5">
                         <span id="contador-productos" class="text-sm text-on-surface-variant font-medium">
                             Mostrando {{ $productos->count() }} productos
                         </span>
-                        <span id="filtro-categoria-badge" class="hidden inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs bg-primary/10 text-primary font-semibold">
+                        <span id="filtro-categoria-badge" class="hidden inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs bg-red-50 text-primary border border-red-200 font-bold">
                             <span class="material-symbols-outlined text-xs">category</span>
                             <span id="filtro-categoria-texto">Categoría</span>
                             <button type="button" id="btn-remover-filtro-categoria" class="hover:text-red-600 flex items-center ml-0.5 cursor-pointer" title="Quitar filtro de categoría">
@@ -288,7 +362,7 @@
                 <p class="text-sm text-on-surface-variant max-w-md mx-auto mb-5" id="sin-resultados-detalle">
                     No encontramos ningún producto que coincida con los criterios de búsqueda.
                 </p>
-                <button type="button" id="btn-limpiar-todos-filtros" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700 transition-colors shadow-sm cursor-pointer">
+                <button type="button" id="btn-limpiar-todos-filtros" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-[#C6161B] transition-colors shadow-sm cursor-pointer">
                     <span class="material-symbols-outlined text-base">refresh</span>
                     Restablecer filtros y ver todos
                 </button>
@@ -342,7 +416,7 @@
                                 <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">
                                     {{ explode(' - ', $prod->nombre_producto)[0] ?? 'Marca' }}
                                 </span>
-                                <h2 class="text-base font-bold text-on-surface mb-2 line-clamp-2 min-h-[44px] group-hover:text-emerald-700 transition-colors leading-snug">
+                                <h2 class="font-display uppercase tracking-tight text-base font-bold text-on-surface mb-2 line-clamp-2 min-h-[44px] group-hover:text-primary transition-colors leading-snug">
                                     {{ $prod->nombre_producto }}
                                 </h2>
                                 @if($prod->descripcion_producto)
@@ -358,7 +432,7 @@
                                     @if($presMayorista)
                                         <div class="flex items-center justify-between">
                                             <span class="text-xs text-on-surface-variant line-through">Minorista: ${{ number_format($presMinorista->precio_minorista, 0, ',', '.') }}</span>
-                                            <span class="bg-emerald-50 text-emerald-800 border border-emerald-200/80 font-bold px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
+                                            <span class="font-bold text-[10px] tracking-wide text-primary bg-red-50 border border-red-200 px-2 py-0.5 rounded uppercase">
                                                 {{ $presMayorista->tipo }} x{{ $presMayorista->cantidad_contenida }}
                                             </span>
                                         </div>
@@ -390,7 +464,7 @@
                                         <div>
                                             <label class="text-[11px] font-bold text-on-surface-variant block mb-1">Presentación:</label>
                                             <div class="relative">
-                                                <select name="presentacion_id" onchange="this.closest('article').querySelector('.price-val').innerText = this.options[this.selectedIndex].dataset.precio" class="w-full text-xs font-semibold py-2 pl-3 pr-8 bg-surface-bright border border-outline-variant rounded-xl focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 cursor-pointer appearance-none">
+                                                <select name="presentacion_id" onchange="this.closest('article').querySelector('.price-val').innerText = this.options[this.selectedIndex].dataset.precio" class="w-full text-xs font-semibold py-2 pl-3 pr-8 bg-surface-bright border border-outline-variant rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary cursor-pointer appearance-none">
                                                     @foreach($prod->presentaciones as $pres)
                                                         @php
                                                             $precioPres = $isMayorista ? $pres->precio_mayorista : $pres->precio_minorista;
@@ -409,16 +483,16 @@
 
                                     <div class="flex items-center gap-2">
                                         <div class="flex items-center border border-outline-variant rounded-xl bg-surface h-11 w-28 px-1">
-                                            <button type="button" onclick="const input = this.nextElementSibling; if(parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;" class="w-8 h-8 rounded-lg text-on-surface-variant hover:text-emerald-700 hover:bg-emerald-50 transition-colors flex items-center justify-center cursor-pointer">
+                                            <button type="button" onclick="const input = this.nextElementSibling; if(parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;" class="w-8 h-8 rounded-lg text-on-surface-variant hover:text-primary hover:bg-red-50 transition-colors flex items-center justify-center cursor-pointer">
                                                 <span class="material-symbols-outlined text-base">remove</span>
                                             </button>
                                             <input name="cantidad" class="w-8 text-center text-sm font-bold text-on-surface bg-transparent border-none p-0 focus:ring-0" min="1" max="999" type="number" value="1"/>
-                                            <button type="button" onclick="const input = this.previousElementSibling; input.value = parseInt(input.value) + 1;" class="w-8 h-8 rounded-lg text-on-surface-variant hover:text-emerald-700 hover:bg-emerald-50 transition-colors flex items-center justify-center cursor-pointer">
+                                            <button type="button" onclick="const input = this.previousElementSibling; input.value = parseInt(input.value) + 1;" class="w-8 h-8 rounded-lg text-on-surface-variant hover:text-primary hover:bg-red-50 transition-colors flex items-center justify-center cursor-pointer">
                                                 <span class="material-symbols-outlined text-base">add</span>
                                             </button>
                                         </div>
                                         @if($prod->stock_actual > 0)
-                                            <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white h-11 rounded-xl text-sm font-bold shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+                                            <button type="submit" class="flex-1 bg-primary hover:bg-[#C6161B] active:bg-[#A81014] text-white h-11 rounded-xl text-sm font-bold shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
                                                 <span class="material-symbols-outlined text-[19px]">add_shopping_cart</span>
                                                 Agregar
                                             </button>
@@ -453,7 +527,7 @@
         <span class="material-symbols-outlined">shopping_cart</span>
         <span class="text-[10px] mt-0.5 font-bold">Carrito</span>
         @if($conteoCarrito > 0)
-            <span class="absolute top-0 right-3 bg-error text-on-error text-[9px] font-bold rounded-full h-3.5 min-w-3.5 px-1 flex items-center justify-center">
+            <span class="absolute top-0 right-3 bg-primary text-on-primary text-[9px] font-bold rounded-full h-3.5 min-w-3.5 px-1 flex items-center justify-center">
                 {{ $conteoCarrito }}
             </span>
         @endif
@@ -465,7 +539,7 @@
 </nav>
 
 <!-- Floating Action Button (FAB) -->
-<button class="fixed bottom-20 md:bottom-lg right-margin-mobile md:right-lg z-30 w-14 h-14 bg-secondary text-on-secondary rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
+<button class="fixed bottom-20 md:bottom-lg right-margin-mobile md:right-lg z-30 w-14 h-14 bg-primary hover:bg-[#C6161B] text-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
     <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">chat_spark</span>
 </button>
 
@@ -548,9 +622,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (btn.classList.contains('categoria-pill')) {
                 if (isMatch) {
                     btn.classList.remove('bg-surface-container', 'hover:bg-surface-container-high', 'text-on-surface-variant');
-                    btn.classList.add('bg-primary', 'text-white', 'shadow-sm', 'font-bold');
+                    btn.classList.add('bg-primary', 'text-white', 'shadow-sm');
                 } else {
-                    btn.classList.remove('bg-primary', 'text-white', 'shadow-sm', 'font-bold');
+                    btn.classList.remove('bg-primary', 'text-white', 'shadow-sm');
                     btn.classList.add('bg-surface-container', 'hover:bg-surface-container-high', 'text-on-surface-variant');
                 }
             } else if (btn.classList.contains('categoria-btn')) {
@@ -563,15 +637,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (isMatch) {
-                    btn.classList.remove('text-on-surface-variant', 'hover:bg-surface-container', 'font-medium');
-                    btn.classList.add('bg-primary', 'text-white', 'shadow-sm', 'font-semibold');
+                    btn.classList.remove('text-on-surface-variant', 'hover:bg-surface-container');
+                    btn.classList.add('bg-primary', 'text-white', 'shadow-sm');
                     if (countBadge) {
                         countBadge.classList.remove('text-on-surface-variant/70', 'bg-surface-container-high');
                         countBadge.classList.add('bg-white/20', 'text-white');
                     }
                 } else {
-                    btn.classList.remove('bg-primary', 'text-white', 'shadow-sm', 'font-semibold');
-                    btn.classList.add('text-on-surface-variant', 'hover:bg-surface-container', 'font-medium');
+                    btn.classList.remove('bg-primary', 'text-white', 'shadow-sm');
+                    btn.classList.add('text-on-surface-variant', 'hover:bg-surface-container');
                     if (countBadge) {
                         countBadge.classList.remove('bg-white/20', 'text-white');
                         countBadge.classList.add('text-on-surface-variant/70', 'bg-surface-container-high');

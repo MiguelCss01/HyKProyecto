@@ -7,8 +7,11 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+    <link href="https://fonts.cdnfonts.com/css/headingnow-trial" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet"/>
 
     <script id="tailwind-config">
         tailwind.config = {
@@ -20,10 +23,10 @@
                         "primary-container": "#0046ad",
                         "on-primary": "#ffffff",
                         "on-primary-container": "#a5bdff",
-                        "secondary": "#006e25",
-                        "secondary-container": "#80f98b",
+                        "secondary": "#059669",
+                        "secondary-container": "#ecfdf5",
                         "on-secondary": "#ffffff",
-                        "on-secondary-container": "#007327",
+                        "on-secondary-container": "#047857",
                         "background": "#f8f9fa",
                         "surface": "#f8f9fa",
                         "surface-bright": "#ffffff",
@@ -34,43 +37,87 @@
                         "error": "#ba1a1a",
                         "error-container": "#ffdad6",
                         "on-error": "#ffffff",
+                        "brand-red": "#E31E24",
+                        "brand-redHover": "#C6161B",
                     },
                     fontFamily: {
                         sans: ["Inter", "sans-serif"],
+                        display: ["Oswald", "sans-serif"],
                     }
                 }
             }
         }
     </script>
+    <style>
+      @font-face {
+        font-family: 'Heading Now';
+        src: local('Heading Now 64 Regular'),
+             local('Heading Now Regular'),
+             local('HeadingNow Trial 64 Regular'),
+             local('Heading Now 71-78'),
+             url('https://fonts.cdnfonts.com/s/103092/HeadingNowTrial64Regular.woff') format('woff');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Heading Now';
+        src: local('Heading Now 66 Bold'),
+         local('Heading Now 76 Bold'),
+         local('Heading Now Bold'),
+         local('HeadingNow Trial 66 Bold'),
+         url('https://fonts.cdnfonts.com/s/103092/HeadingNowTrial66Bold.woff') format('woff');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+      }
+      .font-heading-now {
+        font-family: 'Heading Now', 'Heading Now 71-78', 'HeadingNow Trial', 'Heading Now Trial', sans-serif !important;
+      }
+      .material-symbols-outlined {
+        font-family: 'Material Symbols Outlined' !important;
+        font-weight: normal !important;
+        font-style: normal !important;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none !important;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-feature-settings: 'liga' !important;
+        font-feature-settings: 'liga' !important;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
 </head>
 <body class="bg-background text-on-surface font-sans min-h-screen flex flex-col antialiased">
 
 <!-- TopNavBar -->
 <header class="h-16 bg-surface-bright border-b border-outline-variant flex items-center justify-between px-4 md:px-8 sticky top-0 z-50">
     <div class="flex items-center gap-3">
-        <a href="{{ route('catalogo') }}" class="flex items-center gap-2 text-primary font-bold text-xl tracking-tight">
-            <span class="material-symbols-outlined text-2xl">storefront</span>
-            HyK Mayorista
+        <a href="{{ route('catalogo') }}" class="flex items-center shrink-0 transition-transform hover:scale-[1.01] py-1" title="HyK Mayorista">
+            <img src="{{ asset('images/logo-hyk-1.png') }}" alt="HyK Mayorista" class="h-9 sm:h-10 md:h-11 lg:h-12 w-auto max-w-[190px] sm:max-w-[260px] md:max-w-[340px] lg:max-w-[390px] object-contain select-none mix-blend-multiply">
         </a>
     </div>
 
     <div class="flex items-center gap-4">
-        <a href="{{ route('catalogo') }}" class="hidden sm:flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
-            <span class="material-symbols-outlined text-lg">arrow_back</span>
-            Volver al Catálogo
+        <a href="{{ route('catalogo') }}" class="hidden sm:inline-flex items-center gap-1 text-sm font-normal text-slate-700 hover:text-brand-red transition-colors">
+            <span class="material-symbols-outlined text-base text-slate-500">arrow_back</span>
+            <span class="font-heading-now font-normal">Volver al Catálogo</span>
         </a>
 
         @auth
-            <a href="{{ route('pedidos.index') }}" class="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline" title="Ver mis pedidos">
-                <span class="material-symbols-outlined text-base">receipt_long</span>
-                Mis Pedidos
+            <a href="{{ route('pedidos.index') }}" class="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:text-brand-red transition-colors" title="Ver mis pedidos">
+                <span class="material-symbols-outlined text-base text-slate-500">receipt_long</span>
+                <span class="font-heading-now">Mis Pedidos</span>
             </a>
-            <span class="hidden md:inline text-sm font-bold text-on-surface-variant">
+            <span class="hidden md:inline text-sm font-bold text-slate-800 font-heading-now">
                 Hola, {{ auth()->user()->name }}
             </span>
-            <button type="button" onclick="openLogoutModal()" class="text-xs font-bold text-red-600 hover:underline cursor-pointer">Salir</button>
+            <button type="button" onclick="openLogoutModal()" class="text-sm font-bold text-red-600 hover:underline cursor-pointer font-heading-now">Salir</button>
         @else
-            <a href="{{ route('login') }}" class="text-sm font-bold text-primary hover:underline">
+            <a href="{{ route('login') }}" class="text-sm font-bold text-[#00317e] hover:text-[#002255] hover:underline font-heading-now" style="color: #00317e;">
                 Ingresar / Registrarse
             </a>
         @endauth
@@ -82,7 +129,7 @@
     <!-- Encabezado de Página -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
         <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-on-surface flex items-center gap-2">
+            <h1 class="font-display uppercase tracking-wide text-2xl md:text-3xl font-bold text-on-surface flex items-center gap-2 leading-tight">
                 <span class="material-symbols-outlined text-3xl text-primary">shopping_cart</span>
                 Mi Carrito de Compras
             </h1>
@@ -104,8 +151,8 @@
                         btnText: 'Sí, vaciar carrito',
                         icon: 'delete_sweep'
                     })" 
-                    class="text-xs font-bold text-red-600 hover:text-red-800 flex items-center gap-1 border border-red-200 rounded px-3 py-1.5 hover:bg-red-50 transition-colors cursor-pointer">
-                <span class="material-symbols-outlined text-sm">delete_sweep</span>
+                    class="text-sm font-bold text-white bg-red-500 hover:bg-red-600 flex items-center gap-1.5 rounded-lg px-4 py-2 shadow hover:shadow-md transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-base">delete_sweep</span>
                 Vaciar Carrito
             </button>
         @endif
@@ -132,11 +179,11 @@
             <div class="w-20 h-20 bg-surface-variant rounded-full flex items-center justify-center mx-auto mb-4 text-on-surface-variant">
                 <span class="material-symbols-outlined text-4xl">shopping_cart_checkout</span>
             </div>
-            <h2 class="text-xl font-bold text-on-surface mb-2">Tu carrito está vacío</h2>
+            <h2 class="font-display uppercase tracking-tight text-xl font-bold text-on-surface mb-2">Tu carrito está vacío</h2>
             <p class="text-sm text-on-surface-variant mb-6">
                 Aún no has agregado ningún producto a tu lista de compra. Explora nuestro catálogo de productos mayoristas y minoristas.
             </p>
-            <a href="{{ route('catalogo') }}" class="inline-flex items-center gap-2 bg-primary text-on-primary px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-primary-container transition-colors shadow">
+            <a href="{{ route('catalogo') }}" class="inline-flex items-center gap-2 bg-brand-red hover:bg-brand-redHover text-white px-6 py-2.5 rounded-lg text-sm font-bold transition-colors shadow">
                 <span class="material-symbols-outlined text-lg">storefront</span>
                 Ir al Catálogo de Productos
             </a>
@@ -231,7 +278,7 @@
             <!-- Columna Derecha: Resumen de Compra -->
             <div class="lg:col-span-4">
                 <div class="bg-surface-bright border border-outline-variant rounded-xl p-6 shadow-sm sticky top-24">
-                    <h2 class="text-lg font-bold text-on-surface mb-4 pb-2 border-b border-outline-variant flex items-center gap-2">
+                    <h2 class="font-display uppercase tracking-tight text-lg font-bold text-on-surface mb-4 pb-2 border-b border-outline-variant flex items-center gap-2">
                         <span class="material-symbols-outlined text-primary">receipt_long</span>
                         Resumen del Pedido
                     </h2>
@@ -285,12 +332,12 @@
                     </div>
 
                     <!-- Botón de Continuar Compra (RF 3.2) -->
-                    <a href="{{ route('carrito.confirmar') }}" class="w-full bg-secondary text-on-secondary font-bold py-3 px-4 rounded-lg hover:bg-[#00531a] transition-colors flex items-center justify-center gap-2 shadow-md text-center">
+                    <a href="{{ route('carrito.confirmar') }}" class="w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md text-center cursor-pointer">
                         <span class="material-symbols-outlined text-xl">check_circle</span>
                         Iniciar Pedido / Confirmar
                     </a>
 
-                    <a href="{{ route('catalogo') }}" class="w-full mt-3 text-center text-xs font-bold text-primary hover:underline block">
+                    <a href="{{ route('catalogo') }}" class="w-full mt-3 text-center text-xs font-semibold text-slate-700 hover:text-brand-red hover:underline block transition-colors">
                         &larr; Seguir sumando productos
                     </a>
                 </div>
