@@ -79,8 +79,11 @@ class MercadoPagoService
             'statement_descriptor' => 'HYK MAYORISTA',
         ];
 
-        // Mercado Pago exige HTTPS para auto_return. Si la URL es HTTPS, lo activamos.
-        if (str_starts_with($backUrl, 'https://')) {
+        // Mercado Pago exige HTTPS para auto_return. Si está configurado y la URL es HTTPS, lo activamos.
+        // Nota: Si auto_return está activo ('approved'), Mercado Pago fuerza la redirección en pocos segundos (3s)
+        // sin permitir al comprador revisar el comprobante. Al mantenerse desactivado (false), el comprador
+        // puede ver y descargar el comprobante en Mercado Pago tranquilamente y hacer clic en "Volver al sitio".
+        if (config('services.mercadopago.auto_return', false) && str_starts_with($backUrl, 'https://')) {
             $payload['auto_return'] = 'approved';
         }
 
@@ -266,7 +269,9 @@ class MercadoPagoService
      */
     public function obtenerCredencialesTest(): array
     {
-        $credencialesFile = base_path('MercadoPago/Credenciales.txt');
+        $credencialesFile = File::exists(base_path('MercadoPago/CredencialesMP.txt'))
+            ? base_path('MercadoPago/CredencialesMP.txt')
+            : base_path('MercadoPago/Credenciales.txt');
         $usuarioVendedor = 'TESTUSER2984400822875817517';
         $claveVendedor = 'Zkh4RXjnN5';
         $compradorNombre = 'Comprador Prueba Huertas';

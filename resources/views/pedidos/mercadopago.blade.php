@@ -240,7 +240,7 @@
                             <div id="countdown-container" class="flex items-center justify-between bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-lg text-xs text-gray-600">
                                 <div class="flex items-center gap-2">
                                     <span class="material-symbols-outlined text-mp-blue animate-spin text-sm">sync</span>
-                                    <span>Redirigiendo automáticamente en <strong id="countdown-seconds" class="text-mp-blue font-bold">5</strong>s...</span>
+                                    <span>Redirigiendo automáticamente en <strong id="countdown-seconds" class="text-mp-blue font-bold">20</strong>s...</span>
                                 </div>
                                 <button type="button" onclick="cancelarAutoRedirect()" id="btn-cancel-redirect" class="text-xs font-semibold text-gray-500 hover:text-gray-800 underline cursor-pointer">
                                     Pausar redirección
@@ -339,7 +339,7 @@
 </footer>
 
 <script>
-    let countdown = 5;
+    let countdown = 20;
     let timer = null;
 
     function updateCountdown() {

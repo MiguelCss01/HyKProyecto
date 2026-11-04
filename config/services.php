@@ -40,6 +40,7 @@ return [
         'access_token' => env('MERCADOPAGO_ACCESS_TOKEN', ''),
         'sandbox' => env('MERCADOPAGO_SANDBOX', true),
         'back_url' => env('MERCADOPAGO_BACK_URL', null),
+        'auto_return' => env('MERCADOPAGO_AUTO_RETURN', false),
     ],
 
     'gemini' => [
