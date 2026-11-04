@@ -42,7 +42,7 @@
             font-weight: 400;
             font-style: normal;
             font-display: swap;
-            unicode-range: U+0000-002F, U+003A-FFFF;
+            unicode-range: U+0000-002F, U+003A-2021, U+2023-FFFF;
         }
         @font-face {
             font-family: 'Heading Now';
@@ -54,7 +54,7 @@
             font-weight: 700;
             font-style: normal;
             font-display: swap;
-            unicode-range: U+0000-002F, U+003A-FFFF;
+            unicode-range: U+0000-002F, U+003A-2021, U+2023-FFFF;
         }
         .font-heading-now {
             font-family: 'Heading Now', 'Inter', system-ui, sans-serif !important;
@@ -76,6 +76,31 @@
         .form-card input::-moz-placeholder,
         .form-card input:-ms-input-placeholder {
             font-family: 'Heading Now', 'Inter', system-ui, sans-serif !important;
+        }
+
+        /* Contraseñas: Bolitas proporcionales, legibles y bien espaciadas */
+        .form-card input[type="password"],
+        .password-input[type="password"] {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            font-size: 1.05rem !important;
+            letter-spacing: 0.2em !important;
+        }
+
+        .form-card input[type="password"]::placeholder,
+        .password-input[type="password"]::placeholder {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+            font-size: 1.15rem !important;
+            letter-spacing: 0.24em !important;
+            color: #94a3b8 !important;
+        }
+
+        /* Cuando se muestra la contraseña (type="text" tras presionar el botón de visibilidad) */
+        .form-card input.password-input[type="text"],
+        input#password[type="text"],
+        input#password_confirmation[type="text"] {
+            font-family: 'Heading Now', 'Inter', system-ui, sans-serif !important;
+            font-size: 0.875rem !important;
+            letter-spacing: normal !important;
         }
         .font-digits, .font-sans {
             font-family: 'Inter', system-ui, sans-serif !important;
@@ -167,8 +192,8 @@
                         id="password" 
                         required 
                         autofocus
-                        placeholder="Mínimo 8 caracteres"
-                        class="w-full pl-11 pr-11 py-2.5 rounded-lg border {{ $errors->has('password') ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary' }} bg-white text-sm text-slate-900 font-heading-now shadow-sm outline-none transition"
+                        placeholder="••••••••"
+                        class="w-full pl-11 pr-11 py-2.5 rounded-lg border {{ $errors->has('password') ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary' }} bg-white text-sm text-slate-900 font-heading-now shadow-sm outline-none transition password-input"
                     />
                     <button 
                         type="button" 
@@ -200,8 +225,8 @@
                         name="password_confirmation" 
                         id="password_confirmation" 
                         required 
-                        placeholder="Repite la nueva contraseña"
-                        class="w-full pl-11 pr-11 py-2.5 rounded-lg border border-gray-300 bg-white focus:border-primary focus:ring-1 focus:ring-primary text-sm text-slate-900 font-heading-now shadow-sm outline-none transition"
+                        placeholder="••••••••"
+                        class="w-full pl-11 pr-11 py-2.5 rounded-lg border border-gray-300 bg-white focus:border-primary focus:ring-1 focus:ring-primary text-sm text-slate-900 font-heading-now shadow-sm outline-none transition password-input"
                     />
                     <button 
                         type="button" 

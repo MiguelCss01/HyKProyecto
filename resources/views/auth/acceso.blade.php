@@ -46,7 +46,7 @@
             font-weight: 400;
             font-style: normal;
             font-display: swap;
-            unicode-range: U+0000-002F, U+003A-FFFF;
+            unicode-range: U+0000-002F, U+003A-2021, U+2023-FFFF;
         }
         @font-face {
             font-family: 'Heading Now';
@@ -58,7 +58,7 @@
             font-weight: 700;
             font-style: normal;
             font-display: swap;
-            unicode-range: U+0000-002F, U+003A-FFFF;
+            unicode-range: U+0000-002F, U+003A-2021, U+2023-FFFF;
         }
         .font-heading-now {
             font-family: 'Heading Now', 'Inter', system-ui, sans-serif !important;
@@ -98,6 +98,34 @@
         .login-section input::-moz-placeholder,
         .login-section input:-ms-input-placeholder {
             font-family: 'Heading Now', 'Inter', system-ui, sans-serif !important;
+        }
+
+        /* Contraseñas: Bolitas proporcionales, legibles y bien espaciadas */
+        .register-section input[type="password"],
+        .login-section input[type="password"],
+        .password-input[type="password"] {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            font-size: 1.05rem !important;
+            letter-spacing: 0.2em !important;
+        }
+
+        .register-section input[type="password"]::placeholder,
+        .login-section input[type="password"]::placeholder,
+        .password-input[type="password"]::placeholder {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+            font-size: 1.15rem !important;
+            letter-spacing: 0.24em !important;
+            color: #94a3b8 !important;
+        }
+
+        /* Cuando se muestra la contraseña (type="text" tras presionar el botón de visibilidad) */
+        .register-section input.password-input[type="text"],
+        .login-section input.password-input[type="text"],
+        input#register_password[type="text"],
+        input#login_password[type="text"] {
+            font-family: 'Heading Now', 'Inter', system-ui, sans-serif !important;
+            font-size: 0.875rem !important;
+            letter-spacing: normal !important;
         }
         .font-digits, .font-sans {
             font-family: 'Inter', system-ui, sans-serif !important;
@@ -210,7 +238,7 @@
                     <div class="col-span-2">
                         <label class="block text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800 mb-1.5 font-heading-now">Contraseña</label>
                         <div class="relative mt-0.5">
-                            <input class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 font-heading-now text-sm text-slate-900 shadow-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" id="register_password" name="password" type="password" required/>
+                            <input class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 font-heading-now text-sm text-slate-900 shadow-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition password-input" id="register_password" name="password" placeholder="••••••••" type="password" required/>
                             <button type="button" onclick="togglePasswordVisibility('register_password', 'eye-register')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer" aria-label="Mostrar u ocultar contraseña">
                                 <span id="eye-register" class="material-symbols-outlined text-xl select-none">visibility</span>
                             </button>
@@ -263,7 +291,7 @@
                 <div>
                     <label class="block text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800 mb-1.5 font-heading-now">Contraseña</label>
                     <div class="relative mt-0.5">
-                        <input class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 font-heading-now text-sm text-slate-900 shadow-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" id="login_password" name="password" placeholder="Tu contraseña" type="password" required/>
+                        <input class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 font-heading-now text-sm text-slate-900 shadow-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition password-input" id="login_password" name="password" placeholder="••••••••" type="password" required/>
                         <button type="button" onclick="togglePasswordVisibility('login_password', 'eye-login')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer" aria-label="Mostrar u ocultar contraseña">
                             <span id="eye-login" class="material-symbols-outlined text-xl select-none">visibility</span>
                         </button>
