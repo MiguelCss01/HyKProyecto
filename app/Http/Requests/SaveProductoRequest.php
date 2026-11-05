@@ -21,6 +21,8 @@ class SaveProductoRequest extends FormRequest
             'nombre_producto' => 'required|string|max:255',
             'categoria_id' => 'required|exists:categorias,id',
             'descripcion_producto' => 'nullable|string',
+            'imagen_archivo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:4096',
+            'imagen_url' => 'nullable|string|max:2048',
             'stock_actual' => 'required|integer|min:0',
             'stock_minimo' => 'required|integer|min:0',
             'activo' => 'boolean',
@@ -42,6 +44,9 @@ class SaveProductoRequest extends FormRequest
             'presentaciones.required' => 'El producto debe tener al menos una presentación o precio.',
             'presentaciones.*.precio_minorista.required' => 'El precio minorista es obligatorio en todas las presentaciones.',
             'presentaciones.*.precio_mayorista.required' => 'El precio mayorista es obligatorio en todas las presentaciones.',
+            'imagen_archivo.image' => 'El archivo seleccionado debe ser una imagen válida.',
+            'imagen_archivo.mimes' => 'La imagen debe ser de formato JPG, PNG, WEBP o GIF.',
+            'imagen_archivo.max' => 'La imagen no debe superar los 4 MB.',
         ];
     }
 }

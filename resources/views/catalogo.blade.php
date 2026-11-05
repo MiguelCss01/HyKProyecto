@@ -372,8 +372,8 @@
             <div id="productos-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($productos as $prod)
                     @php
-                        $presMinorista = $prod->presentaciones->where('tipo', 'unidad')->first();
-                        $presMayorista = $prod->presentaciones->where('tipo', '!=', 'unidad')->first();
+                        $presMinorista = $prod->presentaciones->first(fn ($p) => strtolower($p->tipo) === 'unidad');
+                        $presMayorista = $prod->presentaciones->first(fn ($p) => strtolower($p->tipo) !== 'unidad');
                         
                         // Si el usuario es mayorista y existe presentación mayorista, usar esos precios, sino minorista.
                         // Si no está logueado, mostramos ambos como referencia.
@@ -388,7 +388,14 @@
                         
                         <!-- Imagen y Badges -->
                         <div class="relative h-56 w-full bg-gradient-to-b from-slate-50 to-white dark:from-slate-800/40 dark:to-slate-800/80 flex items-center justify-center p-6 overflow-hidden border-b border-outline-variant/40">
-                            <img class="object-contain h-full w-full mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-300" src="{{ $prod->imagen_url }}" alt="{{ $prod->nombre_producto }}">
+                            @if($prod->imagen_url)
+                                <img class="object-contain h-full w-full mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-300" src="{{ $prod->imagen_url }}" alt="{{ $prod->nombre_producto }}">
+                            @else
+                                <div class="flex flex-col items-center justify-center text-slate-300">
+                                    <span class="material-symbols-outlined text-6xl">inventory_2</span>
+                                    <span class="text-[11px] font-semibold mt-1 text-slate-400">Sin imagen</span>
+                                </div>
+                            @endif
                             
                             @if($prod->stock_actual > 0)
                                 <span class="absolute top-3 left-3 bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold px-2.5 py-1 rounded-full text-[11px] uppercase tracking-wider flex items-center gap-1.5 shadow-xs">
@@ -431,7 +438,7 @@
                                 <div class="pt-3 pb-3 px-3.5 bg-surface-container-low/70 dark:bg-surface-variant/20 rounded-xl border border-outline-variant/40 flex flex-col gap-1 mb-4">
                                     @if($presMayorista)
                                         <div class="flex items-center justify-between">
-                                            <span class="text-xs text-on-surface-variant line-through">Minorista: ${{ number_format($presMinorista->precio_minorista, 0, ',', '.') }}</span>
+                                            <span class="text-xs text-on-surface-variant line-through">Minorista: ${{ number_format($presMinorista?->precio_minorista ?? $presMayorista->precio_minorista ?? 0, 0, ',', '.') }}</span>
                                             <span class="font-bold text-[10px] tracking-wide text-primary bg-red-50 border border-red-200 px-2 py-0.5 rounded uppercase">
                                                 {{ $presMayorista->tipo }} x{{ $presMayorista->cantidad_contenida }}
                                             </span>
