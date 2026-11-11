@@ -112,6 +112,21 @@
                 <span class="material-symbols-outlined text-base text-slate-500">receipt_long</span>
                 <span class="font-heading-now">Mis Pedidos</span>
             </a>
+            <a href="{{ route('perfil.index') }}" class="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:text-brand-red transition-colors" title="Ver mi perfil">
+                <span class="material-symbols-outlined text-base text-slate-500">person</span>
+                <span class="font-heading-now">Mi Perfil</span>
+            </a>
+            @php
+                $notifCartCount = auth()->user()->unreadNotifications()->count();
+            @endphp
+            <a href="{{ route('notificaciones.index') }}" class="relative p-1 text-slate-700 hover:text-brand-red transition-colors flex items-center" title="Avisos y Notificaciones">
+                <span class="material-symbols-outlined text-xl">notifications</span>
+                @if($notifCartCount > 0)
+                    <span class="absolute top-0 right-0 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-brand-red text-white text-[10px] font-bold leading-none animate-pulse">
+                        {{ $notifCartCount }}
+                    </span>
+                @endif
+            </a>
             <span class="hidden md:inline text-sm font-bold text-slate-800 font-heading-now">
                 Hola, {{ auth()->user()->name }}
             </span>
@@ -213,9 +228,6 @@
                             <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-1">
                                 <span class="bg-surface-variant text-on-surface-variant text-[11px] font-bold px-2 py-0.5 rounded uppercase">
                                     {{ $item['presentacion']->tipo }} (x{{ $item['presentacion']->cantidad_contenida }})
-                                </span>
-                                <span class="text-xs text-on-surface-variant">
-                                    Stock disponible: <strong class="text-on-surface">{{ $item['stock_max_presentacion'] }}</strong>
                                 </span>
                             </div>
 

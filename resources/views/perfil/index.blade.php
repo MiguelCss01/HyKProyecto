@@ -33,6 +33,8 @@
                         "error": "#ba1a1a",
                         "error-container": "#ffdad6",
                         "on-error-container": "#93000a",
+                        "brand-red": "#E31E24",
+                        "brand-redHover": "#C6161B",
                     },
                     fontFamily: {
                         sans: ["Inter", "sans-serif"],
@@ -61,6 +63,15 @@
         <a href="{{ route('pedidos.index') }}" class="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
             <span class="material-symbols-outlined text-lg">receipt_long</span>
             <span class="hidden sm:inline">Mis Pedidos</span>
+        </a>
+
+        <a href="{{ route('notificaciones.index') }}" class="relative p-2 text-primary hover:bg-surface-variant/40 rounded-full transition-colors flex items-center" title="Avisos y Notificaciones">
+            <span class="material-symbols-outlined text-xl">notifications</span>
+            @if(isset($notificacionesNoLeidas) && $notificacionesNoLeidas > 0)
+                <span class="absolute top-0 right-0 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-brand-red text-white text-[10px] font-bold leading-none animate-pulse">
+                    {{ $notificacionesNoLeidas }}
+                </span>
+            @endif
         </a>
 
         @php

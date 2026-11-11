@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pedido;
+use App\Notifications\EstadoPedidoActualizadoNotification;
 use Illuminate\Http\Request;
 
 class PedidoController extends Controller
@@ -43,10 +44,17 @@ class PedidoController extends Controller
             'estado' => 'required|string|max:50',
         ]);
 
+        $estadoAnterior = strtoupper((string) $pedido->estado);
+        $nuevoEstado = strtoupper($request->estado);
+
         $pedido->update([
-            'estado' => strtoupper($request->estado),
+            'estado' => $nuevoEstado,
         ]);
 
-        return redirect()->back()->with('success', 'Estado del pedido actualizado a: '.strtoupper($request->estado));
+        if ($estadoAnterior !== $nuevoEstado && $pedido->user) {
+            $pedido->user->notify(new EstadoPedidoActualizadoNotification($pedido, $estadoAnterior, $nuevoEstado));
+        }
+
+        return redirect()->back()->with('success', 'Estado del pedido actualizado a: '.$nuevoEstado);
     }
 }

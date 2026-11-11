@@ -126,7 +126,7 @@
     </div>
     <div class="hidden md:flex flex-1 max-w-2xl mx-lg relative items-center">
         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-xl">search</span>
-        <input id="search-input-desktop" class="w-full pl-10 pr-10 py-2 bg-surface-bright border border-outline-variant rounded focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-heading-now font-normal text-sm" placeholder="Buscar productos, marcas o códigos..." type="text" autocomplete="off"/>
+        <input id="search-input-desktop" class="w-full pl-10 pr-10 py-2 bg-surface-bright border border-outline-variant rounded focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-heading-now font-normal text-sm" placeholder="Buscar Productos, Marcas o Códigos..." type="text" autocomplete="off"/>
         <button type="button" id="search-clear-desktop" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface p-1 rounded-full hover:bg-surface-container-high transition-colors cursor-pointer" title="Limpiar búsqueda">
             <span class="material-symbols-outlined text-base">close</span>
         </button>
@@ -137,9 +137,21 @@
                 <span class="material-symbols-outlined text-base text-slate-500">receipt_long</span>
                 <span class="font-heading-now">Mis Pedidos</span>
             </a>
-            <a href="{{ Route::has('perfil.index') ? route('perfil.index') : '#' }}" class="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:text-primary transition-colors mr-4" title="Ver mi perfil">
+            <a href="{{ Route::has('perfil.index') ? route('perfil.index') : '#' }}" class="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:text-primary transition-colors mr-3" title="Ver mi perfil">
                 <span class="material-symbols-outlined text-base text-slate-500">person</span>
                 <span class="font-heading-now">Mi Perfil</span>
+            </a>
+            @php
+                $notifNoLeidasCount = auth()->user()->unreadNotifications()->count();
+            @endphp
+            <a href="{{ route('notificaciones.index') }}" class="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:text-primary transition-colors mr-4 relative" title="Notificaciones de Pedidos">
+                <span class="material-symbols-outlined text-base text-slate-500">notifications</span>
+                <span class="font-heading-now">Avisos</span>
+                @if($notifNoLeidasCount > 0)
+                    <span class="flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-brand-red text-white text-[10px] font-bold leading-none animate-pulse">
+                        {{ $notifNoLeidasCount }}
+                    </span>
+                @endif
             </a>
             <span class="hidden md:block mr-4 text-sm font-bold text-slate-800 font-heading-now">Hola, {{ auth()->user()->name }}</span>
             <button type="button" onclick="openLogoutModal()" class="text-sm font-bold text-red-600 hover:underline mr-4 cursor-pointer font-heading-now">Salir</button>
@@ -195,10 +207,23 @@
                     <span class="font-heading-now">Mis Pedidos</span>
                 </a>
             </li>
-            <li class="px-sm py-xs mb-2 border-b border-outline-variant/60 pb-2">
+            <li class="px-sm py-xs mb-1">
                 <a class="flex items-center gap-sm px-4 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-100 hover:text-slate-900 transition-all" href="{{ Route::has('perfil.index') ? route('perfil.index') : '#' }}">
                     <span class="material-symbols-outlined text-slate-500">person</span>
                     <span class="font-heading-now">Mi Perfil</span>
+                </a>
+            </li>
+            <li class="px-sm py-xs mb-2 border-b border-outline-variant/60 pb-2">
+                <a class="flex items-center justify-between px-4 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-100 hover:text-slate-900 transition-all" href="{{ route('notificaciones.index') }}">
+                    <div class="flex items-center gap-sm">
+                        <span class="material-symbols-outlined text-slate-500">notifications</span>
+                        <span class="font-heading-now">Notificaciones</span>
+                    </div>
+                    @if(auth()->user()->unreadNotifications()->count() > 0)
+                        <span class="bg-brand-red text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                            {{ auth()->user()->unreadNotifications()->count() }}
+                        </span>
+                    @endif
                 </a>
             </li>
         @endauth
@@ -244,10 +269,23 @@
                     <span class="font-heading-now">Mis Pedidos</span>
                 </a>
             </li>
-            <li class="px-sm py-xs mb-2 border-b border-outline-variant/60 pb-2">
+            <li class="px-sm py-xs mb-1">
                 <a class="flex items-center gap-sm px-4 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-100 hover:text-slate-900 transition-all" href="{{ Route::has('perfil.index') ? route('perfil.index') : '#' }}">
                     <span class="material-symbols-outlined text-slate-500">person</span>
                     <span class="font-heading-now">Mi Perfil</span>
+                </a>
+            </li>
+            <li class="px-sm py-xs mb-2 border-b border-outline-variant/60 pb-2">
+                <a class="flex items-center justify-between px-4 py-2 rounded-lg text-slate-700 font-semibold hover:bg-slate-100 hover:text-slate-900 transition-all" href="{{ route('notificaciones.index') }}">
+                    <div class="flex items-center gap-sm">
+                        <span class="material-symbols-outlined text-slate-500">notifications</span>
+                        <span class="font-heading-now">Notificaciones</span>
+                    </div>
+                    @if(auth()->user()->unreadNotifications()->count() > 0)
+                        <span class="bg-brand-red text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                            {{ auth()->user()->unreadNotifications()->count() }}
+                        </span>
+                    @endif
                 </a>
             </li>
         @endauth
@@ -302,7 +340,7 @@
         <div class="md:hidden mb-4 bg-surface-bright rounded-2xl shadow-sm border border-outline-variant p-2">
             <div class="relative w-full flex items-center">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-xl">search</span>
-                <input id="search-input-mobile" class="w-full pl-10 pr-10 py-2.5 bg-surface-bright border border-outline-variant rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm font-heading-now font-normal" placeholder="Buscar productos, marcas o códigos..." type="text" autocomplete="off"/>
+                <input id="search-input-mobile" class="w-full pl-10 pr-10 py-2.5 bg-surface-bright border border-outline-variant rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm font-heading-now font-normal" placeholder="Buscar Productos, Marcas o Códigos..." type="text" autocomplete="off"/>
                 <button type="button" id="search-clear-mobile" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface p-1 rounded-full hover:bg-surface-container-high transition-colors cursor-pointer" title="Limpiar búsqueda">
                     <span class="material-symbols-outlined text-base">close</span>
                 </button>

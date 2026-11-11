@@ -73,6 +73,17 @@
                 <span class="material-symbols-outlined text-lg">person</span>
                 Mi Perfil
             </a>
+            @php
+                $notifCount = auth()->user()->unreadNotifications()->count();
+            @endphp
+            <a href="{{ route('notificaciones.index') }}" class="relative p-1 text-primary hover:bg-surface-variant/40 rounded-full transition-colors flex items-center" title="Avisos y Notificaciones">
+                <span class="material-symbols-outlined text-xl">notifications</span>
+                @if($notifCount > 0)
+                    <span class="absolute top-0 right-0 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-red-600 text-white text-[10px] font-bold leading-none animate-pulse">
+                        {{ $notifCount }}
+                    </span>
+                @endif
+            </a>
             <span class="hidden md:inline text-sm font-bold text-on-surface-variant">
                 Hola, {{ auth()->user()->name }}
             </span>

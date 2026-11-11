@@ -21,10 +21,12 @@ class PerfilController extends Controller
         /** @var User $user */
         $user = Auth::user();
         $isVerified = $this->isProfileVerified();
+        $notificacionesNoLeidas = $user->unreadNotifications()->count();
 
         return view('perfil.index', [
             'user' => $user,
             'isVerified' => $isVerified,
+            'notificacionesNoLeidas' => $notificacionesNoLeidas,
         ]);
     }
 
