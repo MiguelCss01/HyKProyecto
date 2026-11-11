@@ -29,7 +29,7 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.productos.store') }}" method="POST" class="bg-white shadow rounded-lg overflow-hidden" id="producto-form">
+    <form action="{{ route('admin.productos.store') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow rounded-lg overflow-hidden" id="producto-form">
         @csrf
 
         <!-- SECCIÓN 1: Datos Básicos -->
@@ -59,6 +59,32 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
                     <textarea name="descripcion_producto" rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('descripcion_producto') }}</textarea>
                 </div>
+
+                <!-- Imagen del Producto -->
+                <div class="md:col-span-2 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <label class="block text-sm font-semibold text-gray-800 mb-2 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-indigo-600 text-base">image</span>
+                        Imagen del Producto
+                    </label>
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                        <div class="md:col-span-3 flex justify-center">
+                            <div class="w-28 h-28 rounded-lg border-2 border-dashed border-gray-300 bg-white flex items-center justify-center overflow-hidden p-2">
+                                <img id="imagen-preview" src="https://via.placeholder.com/150?text=Sin+Imagen" alt="Vista previa" class="object-contain w-full h-full">
+                            </div>
+                        </div>
+                        <div class="md:col-span-9 space-y-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Subir archivo desde tu PC (JPG, PNG, WEBP)</label>
+                                <input type="file" name="imagen_archivo" id="input-imagen-archivo" accept="image/*" class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 uppercase mb-1">O pegar enlace (URL) de imagen</label>
+                                <input type="text" name="imagen_url" id="input-imagen-url" value="{{ old('imagen_url') }}" placeholder="https://ejemplo.com/imagen-producto.jpg" class="w-full text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Stock Actual <span class="text-red-500">*</span></label>
                     <input type="number" name="stock_actual" value="{{ old('stock_actual', 0) }}" min="0" required class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
@@ -183,6 +209,32 @@ document.addEventListener('DOMContentLoaded', function() {
             newRow.remove(); // Borra el HTML del DOM
         });
     });
+
+    // Vista previa de imagen en vivo
+    const inputArchivo = document.getElementById('input-imagen-archivo');
+    const inputUrl = document.getElementById('input-imagen-url');
+    const imgPreview = document.getElementById('imagen-preview');
+
+    if (inputArchivo && imgPreview) {
+        inputArchivo.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    imgPreview.src = evt.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    if (inputUrl && imgPreview) {
+        inputUrl.addEventListener('input', function() {
+            if (this.value.trim() !== '' && (!inputArchivo || !inputArchivo.files.length)) {
+                imgPreview.src = this.value.trim();
+            }
+        });
+    }
 });
 </script>
 @endsection

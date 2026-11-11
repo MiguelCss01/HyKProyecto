@@ -7,6 +7,8 @@ use App\Http\Requests\SaveProductoRequest;
 use App\Models\Categoria;
 use App\Models\Producto;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class ProductoController extends Controller
 {
@@ -26,12 +28,15 @@ class ProductoController extends Controller
 
     public function store(SaveProductoRequest $request)
     {
+        $imagenUrl = $this->resolverImagenProducto($request);
+
         // 1. Usar una transacción para asegurar que se guarde el producto Y sus presentaciones juntos
-        DB::transaction(function () use ($request) {
+        DB::transaction(function () use ($request, $imagenUrl) {
             // Guardar datos básicos
             $producto = Producto::create([
                 'nombre_producto' => $request->nombre_producto,
                 'descripcion_producto' => $request->descripcion_producto,
+                'imagen_url' => $imagenUrl,
                 'categoria_id' => $request->categoria_id,
                 'stock_actual' => $request->stock_actual,
                 'stock_minimo' => $request->stock_minimo,
@@ -58,10 +63,13 @@ class ProductoController extends Controller
 
     public function update(SaveProductoRequest $request, Producto $producto)
     {
-        DB::transaction(function () use ($request, $producto) {
+        $imagenUrl = $this->resolverImagenProducto($request, $producto->imagen_url);
+
+        DB::transaction(function () use ($request, $producto, $imagenUrl) {
             $producto->update([
                 'nombre_producto' => $request->nombre_producto,
                 'descripcion_producto' => $request->descripcion_producto,
+                'imagen_url' => $imagenUrl,
                 'categoria_id' => $request->categoria_id,
                 'stock_actual' => $request->stock_actual,
                 'stock_minimo' => $request->stock_minimo,
@@ -84,5 +92,32 @@ class ProductoController extends Controller
         $producto->delete();
 
         return redirect()->route('admin.productos.index')->with('success', 'Producto eliminado.');
+    }
+
+    /**
+     * Procesa la subida de archivo de imagen o retorna la URL ingresada.
+     */
+    private function resolverImagenProducto(SaveProductoRequest $request, ?string $imagenActual = null): ?string
+    {
+        if ($request->hasFile('imagen_archivo') && $request->file('imagen_archivo')->isValid()) {
+            $destino = public_path('images/productos');
+            if (! File::exists($destino)) {
+                File::makeDirectory($destino, 0755, true);
+            }
+
+            $archivo = $request->file('imagen_archivo');
+            $extension = $archivo->getClientOriginalExtension() ?: 'jpg';
+            $nombreArchivo = 'prod_'.now()->format('YmdHis').'_'.Str::lower(Str::random(6)).'.'.$extension;
+
+            $archivo->move($destino, $nombreArchivo);
+
+            return '/images/productos/'.$nombreArchivo;
+        }
+
+        if ($request->filled('imagen_url')) {
+            return trim((string) $request->input('imagen_url'));
+        }
+
+        return $imagenActual;
     }
 }
