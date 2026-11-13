@@ -1,3 +1,14 @@
+# Etapa 1: Compilar assets de Vite (CSS y JS para el panel Admin)
+FROM node:22-alpine AS assets
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm install
+COPY resources ./resources
+COPY public ./public
+COPY vite.config.js ./
+RUN npm run build
+
+# Etapa 2: Imagen PHP para Producción
 FROM php:8.4-cli
 
 # Instalar dependencias del sistema y extensiones de PHP necesarias para Laravel
@@ -19,8 +30,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copiar los archivos del proyecto
+# Copiar los archivos del proyecto y los assets compilados de Vite
 COPY . .
+COPY --from=assets /app/public/build ./public/build
 
 # Instalar dependencias de PHP optimizadas para producción
 RUN composer install --no-dev --optimize-autoloader --no-interaction
