@@ -74,13 +74,14 @@
                                     {{ $user->created_at->format('d/m/Y H:i') }}
                                 </td>
                                 <td class="py-4 px-6 text-right">
-                                    <form action="{{ route('admin.usuarios.destroy', $user->id) }}" method="POST" class="inline" onsubmit="return confirm('¿Seguro que deseas eliminar a este cliente? Se borrarán sus datos.');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="p-2 text-error hover:bg-error-container hover:text-on-error-container rounded-full transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100" title="Eliminar Cliente">
-                                            <span class="material-symbols-outlined text-[20px]">delete</span>
-                                        </button>
-                                    </form>
+                                    <button type="button" 
+                                            data-action="{{ route('admin.usuarios.destroy', $user->id) }}"
+                                            data-name="{{ $user->name }}"
+                                            onclick="openDeleteClientModal(this.dataset.action, this.dataset.name)"
+                                            class="p-2 text-error hover:bg-error-container hover:text-on-error-container rounded-full transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 cursor-pointer" 
+                                            title="Eliminar Cliente">
+                                        <span class="material-symbols-outlined text-[20px]">delete</span>
+                                    </button>
                                 </td>
                             </tr>
                         @empty
@@ -106,4 +107,6 @@
 
     </div>
 </div>
+
+<x-modal-delete-client />
 @endsection

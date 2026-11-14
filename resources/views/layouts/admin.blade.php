@@ -29,8 +29,9 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8; 
         }
-        /* Reglas para evitar colapso flex/grid del modal en el dashboard */
-        #modal-logout {
+        /* Reglas para evitar colapso flex/grid de modales en el panel admin */
+        #modal-logout,
+        #modal-delete-client {
             position: fixed !important;
             inset: 0 !important;
             top: 0 !important;
@@ -47,13 +48,16 @@
             flex-shrink: 0 !important;
             flex-grow: 0 !important;
         }
-        #modal-logout.pointer-events-none {
+        #modal-logout.pointer-events-none,
+        #modal-delete-client.pointer-events-none {
             pointer-events: none !important;
         }
-        #modal-logout.pointer-events-auto {
+        #modal-logout.pointer-events-auto,
+        #modal-delete-client.pointer-events-auto {
             pointer-events: auto !important;
         }
-        #modal-logout-card {
+        #modal-logout-card,
+        #modal-delete-client-card {
             width: 100% !important;
             max-width: 28rem !important;
             min-width: 280px !important;
