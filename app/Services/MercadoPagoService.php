@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Pago;
 use App\Models\Pedido;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -183,14 +184,32 @@ class MercadoPagoService
             if ($response->successful()) {
                 $results = $response->json('results', []);
 
+                $fechaCreacionPedido = $pedido->created_at
+                    ? $pedido->created_at->copy()->subMinutes(2)
+                    : null;
+
                 foreach ($results as $payment) {
-                    if (($payment['status'] ?? '') === 'approved') {
-                        return $this->registrarPagoAprobado(
-                            $pedido,
-                            (string) $payment['id'],
-                            isset($payment['transaction_amount']) ? (float) $payment['transaction_amount'] : (float) $pedido->total
-                        );
+                    if (($payment['status'] ?? '') !== 'approved') {
+                        continue;
                     }
+
+                    // Ignorar pagos viejos de pruebas anteriores que hayan tenido el mismo ID de pedido
+                    if ($fechaCreacionPedido !== null && ! empty($payment['date_created'])) {
+                        try {
+                            $fechaPagoMp = Carbon::parse($payment['date_created']);
+                            if ($fechaPagoMp->lt($fechaCreacionPedido)) {
+                                continue;
+                            }
+                        } catch (Exception) {
+                            // Si no se puede parsear la fecha, continuar normalmente
+                        }
+                    }
+
+                    return $this->registrarPagoAprobado(
+                        $pedido,
+                        (string) $payment['id'],
+                        isset($payment['transaction_amount']) ? (float) $payment['transaction_amount'] : (float) $pedido->total
+                    );
                 }
             }
         } catch (Exception $e) {

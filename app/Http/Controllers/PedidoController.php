@@ -128,14 +128,6 @@ class PedidoController extends Controller
             ->where('user_id', Auth::id())
             ->findOrFail($id);
 
-        if ($pedido->estado !== 'PAGADO' && $pedido->pago === null) {
-            $pagoVerificado = $this->mercadoPagoService->verificarPagoPorReferencia($pedido);
-            if ($pagoVerificado !== null) {
-                return redirect()->route('pedido.exito', $pedido->id)
-                    ->with('success', '¡Tu pago ha sido acreditado exitosamente por Mercado Pago!');
-            }
-        }
-
         if ($pedido->estado === 'PAGADO' || $pedido->pago !== null) {
             return redirect()->route('pedido.exito', $pedido->id)
                 ->with('info', 'Este pedido ya cuenta con un pago acreditado.');
