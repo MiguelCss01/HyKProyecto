@@ -10,10 +10,6 @@
             <p class="font-body-md text-body-md text-on-surface-variant mt-1">Gestiona el inventario de productos en almacén.</p>
         </div>
         <div class="flex items-center gap-md">
-            <button class="flex items-center gap-2 bg-surface border border-outline-variant text-on-surface-variant font-label-md py-2 px-4 rounded-lg hover:bg-surface-container-low transition-colors shadow-sm">
-                <span class="material-symbols-outlined text-[20px]" data-icon="download">download</span>
-                Exportar
-            </button>
             <a href="{{ route('admin.productos.create') }}" class="flex items-center gap-2 bg-primary-container text-on-primary-container font-label-md py-2 px-4 rounded-lg hover:opacity-90 transition-opacity shadow-sm">
                 <span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
                 Nuevo Producto
@@ -24,23 +20,35 @@
     <!-- Toolbar: Search & Filters -->
     <div class="flex flex-col md:flex-row gap-md items-start md:items-center justify-between bg-surface-bright p-4 rounded-xl border border-outline-variant/50">
         <!-- Search -->
-        <div class="relative w-full md:w-96">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" data-icon="search">search</span>
-            <input class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-on-surface-variant/70 shadow-sm" placeholder="Buscar producto, SKU o código..." type="text"/>
-        </div>
+        <form action="{{ route('admin.productos.index') }}" method="GET" class="relative w-full md:w-96 flex items-center gap-2">
+            @if(request('categoria'))
+                <input type="hidden" name="categoria" value="{{ request('categoria') }}">
+            @endif
+            <div class="relative flex-1">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" data-icon="search">search</span>
+                <input name="buscar" value="{{ request('buscar') }}" class="w-full pl-10 pr-8 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-on-surface-variant/70 shadow-sm" placeholder="Buscar producto o marca..." type="text"/>
+                @if(request('buscar'))
+                    <a href="{{ route('admin.productos.index', request()->only('categoria')) }}" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-error" title="Limpiar búsqueda">
+                        <span class="material-symbols-outlined text-base">close</span>
+                    </a>
+                @endif
+            </div>
+            <button type="submit" class="px-3 py-2 bg-primary text-white rounded-lg font-label-md text-xs hover:bg-primary-container transition-colors shadow-sm cursor-pointer">
+                Buscar
+            </button>
+        </form>
         
         <!-- Filters -->
         <div class="flex items-center gap-sm overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide">
             <span class="font-label-md text-label-md text-on-surface-variant whitespace-nowrap mr-2">Categorías:</span>
-            <button class="px-4 py-1.5 rounded-full bg-primary-container text-on-primary-container font-label-md text-sm whitespace-nowrap border border-transparent shadow-sm">
+            <a href="{{ route('admin.productos.index', request()->only('buscar')) }}" class="px-4 py-1.5 rounded-full font-label-md text-sm whitespace-nowrap border transition-colors {{ !request('categoria') ? 'bg-primary-container text-on-primary-container border-transparent shadow-sm' : 'bg-surface-container-lowest text-on-surface-variant border-outline-variant hover:bg-surface-container-low' }}">
                 Todos
-            </button>
-            <button class="px-4 py-1.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-sm whitespace-nowrap border border-outline-variant hover:bg-surface-container-low transition-colors">
-                Alimentos
-            </button>
-            <button class="px-4 py-1.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-sm whitespace-nowrap border border-outline-variant hover:bg-surface-container-low transition-colors">
-                Bebidas
-            </button>
+            </a>
+            @foreach($categorias ?? [] as $cat)
+                <a href="{{ route('admin.productos.index', array_filter(['categoria' => $cat->id, 'buscar' => request('buscar')])) }}" class="px-4 py-1.5 rounded-full font-label-md text-sm whitespace-nowrap border transition-colors {{ (string) request('categoria') === (string) $cat->id ? 'bg-primary-container text-on-primary-container border-transparent shadow-sm' : 'bg-surface-container-lowest text-on-surface-variant border-outline-variant hover:bg-surface-container-low' }}">
+                    {{ $cat->nombre_categoria }}
+                </a>
+            @endforeach
         </div>
     </div>
 </header>

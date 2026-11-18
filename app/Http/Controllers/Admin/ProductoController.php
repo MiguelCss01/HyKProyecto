@@ -6,17 +6,34 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SaveProductoRequest;
 use App\Models\Categoria;
 use App\Models\Producto;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class ProductoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $productos = Producto::with(['categoria', 'presentaciones'])->paginate(10);
+        $categorias = Categoria::orderBy('nombre_categoria')->get();
 
-        return view('admin.productos.index', compact('productos'));
+        $query = Producto::with(['categoria', 'presentaciones']);
+
+        if ($request->filled('buscar')) {
+            $buscar = trim((string) $request->input('buscar'));
+            $query->where(function ($q) use ($buscar) {
+                $q->where('nombre_producto', 'like', "%{$buscar}%")
+                    ->orWhere('descripcion_producto', 'like', "%{$buscar}%");
+            });
+        }
+
+        if ($request->filled('categoria')) {
+            $query->where('categoria_id', $request->input('categoria'));
+        }
+
+        $productos = $query->orderByDesc('id')->paginate(10)->withQueryString();
+
+        return view('admin.productos.index', compact('productos', 'categorias'));
     }
 
     public function create()

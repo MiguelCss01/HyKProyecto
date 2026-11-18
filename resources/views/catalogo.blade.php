@@ -133,6 +133,12 @@
     </div>
     <div class="flex items-center gap-sm">
         @auth
+            @if(auth()->user()->role === 'admin')
+                <a href="{{ route('admin.dashboard') }}" class="hidden sm:inline-flex items-center gap-1 text-sm font-bold text-primary hover:underline mr-3" title="Ir al Panel de Administración">
+                    <span class="material-symbols-outlined text-base">admin_panel_settings</span>
+                    <span class="font-heading-now">Panel Admin</span>
+                </a>
+            @endif
             <a href="{{ route('pedidos.index') }}" class="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-slate-700 hover:text-primary transition-colors mr-3" title="Ver mis pedidos">
                 <span class="material-symbols-outlined text-base text-slate-500">receipt_long</span>
                 <span class="font-heading-now">Mis Pedidos</span>
@@ -582,11 +588,6 @@
         <span class="text-[10px] mt-0.5 font-medium">Pedidos</span>
     </a>
 </nav>
-
-<!-- Floating Action Button (FAB) -->
-<button class="fixed bottom-20 md:bottom-lg right-margin-mobile md:right-lg z-30 w-14 h-14 bg-primary hover:bg-[#C6161B] text-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer">
-    <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">chat_spark</span>
-</button>
 
 @auth
     <x-modal-logout />

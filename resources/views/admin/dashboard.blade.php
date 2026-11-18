@@ -10,13 +10,10 @@
             <p class="font-body-md text-body-md text-on-surface-variant mt-1">Resumen general del negocio.</p>
         </div>
         <div class="flex items-center gap-md">
-            <button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors relative">
-                <span class="material-symbols-outlined">notifications</span>
-                <span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
-            </button>
-            <button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
-                <span class="material-symbols-outlined">settings</span>
-            </button>
+            <a href="{{ route('catalogo') }}" class="flex items-center gap-2 bg-surface border border-outline-variant text-on-surface-variant font-label-md py-2 px-4 rounded-lg hover:bg-surface-container-low transition-colors shadow-sm text-sm">
+                <span class="material-symbols-outlined text-[18px]">storefront</span>
+                Ver Catálogo
+            </a>
         </div>
     </div>
 </header>
@@ -52,7 +49,7 @@
                         <span class="material-symbols-outlined text-primary">local_shipping</span>
                     </div>
                 </div>
-                <a href="#" class="font-label-md text-label-md text-primary hover:underline flex items-center gap-1 mt-auto">
+                <a href="{{ route('admin.pedidos.index') }}" class="font-label-md text-label-md text-primary hover:underline flex items-center gap-1 mt-auto">
                     Ver todos los pedidos <span class="material-symbols-outlined text-sm">arrow_forward</span>
                 </a>
             </div>
