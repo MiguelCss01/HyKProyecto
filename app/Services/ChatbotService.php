@@ -69,17 +69,26 @@ class ChatbotService
         $fuente = 'local';
 
         if ($apiKey !== '') {
+            $catalogoCompleto = $this->obtenerCatalogoCompletoFormateado($isMayorista);
+
             $respuestaTexto = $this->consultarGemini(
                 $mensajeLimpio,
                 $user,
                 $isMayorista,
                 $tarjetasProductos,
+                $catalogoCompleto,
                 $tarjetasPedidos,
                 $historial
             );
 
             if ($respuestaTexto !== null) {
                 $fuente = 'gemini';
+
+                // Sincronizar las tarjetas interactivas con los productos que Gemini mencionó en su respuesta
+                $tarjetasSincronizadas = $this->sincronizarTarjetasConRespuesta($respuestaTexto, $catalogoCompleto, $tarjetasProductos);
+                if (! empty($tarjetasSincronizadas)) {
+                    $tarjetasProductos = $tarjetasSincronizadas;
+                }
             }
         }
 
@@ -176,26 +185,29 @@ class ChatbotService
             }
         }
 
-        if (! empty($palabras)) {
+        // Filtrar de las palabras clave el nombre de la categoría para buscar primero coincidencias de producto específico
+        $palabrasProducto = array_values(array_filter($palabras, function (string $palabra) use ($categoriaDetectada) {
+            if (! $categoriaDetectada) {
+                return true;
+            }
+            $catNorm = $this->normalizarTexto($categoriaDetectada->nombre_categoria);
+            $catSing = rtrim($catNorm, 's');
+
+            return $palabra !== $catNorm && $palabra !== $catSing;
+        }));
+
+        if (! empty($palabrasProducto)) {
             $productos = (clone $queryBase)
-                ->where(function ($q) use ($palabras, $categoriaDetectada) {
-                    foreach ($palabras as $palabra) {
+                ->where(function ($q) use ($palabrasProducto) {
+                    foreach ($palabrasProducto as $palabra) {
                         $raiz = mb_strlen($palabra) > 4 ? rtrim($palabra, 'es') : $palabra;
                         $raiz = mb_strlen($raiz) > 3 ? rtrim($raiz, 's') : $palabra;
 
                         $q->orWhere('nombre_producto', 'like', "%{$palabra}%")
                             ->orWhere('descripcion_producto', 'like', "%{$palabra}%")
-                            ->orWhere('nombre_producto', 'like', "%{$raiz}%")
-                            ->orWhereHas('categoria', function ($cq) use ($raiz) {
-                                $cq->where('nombre_categoria', 'like', "%{$raiz}%");
-                            });
-                    }
-
-                    if ($categoriaDetectada) {
-                        $q->orWhere('categoria_id', $categoriaDetectada->id);
+                            ->orWhere('nombre_producto', 'like', "%{$raiz}%");
                     }
                 })
-                ->orderByDesc('stock_actual')
                 ->limit(4)
                 ->get();
 
@@ -207,16 +219,17 @@ class ChatbotService
         if ($categoriaDetectada) {
             return (clone $queryBase)
                 ->where('categoria_id', $categoriaDetectada->id)
-                ->orderByDesc('stock_actual')
+                ->where('stock_actual', '>', 0)
+                ->inRandomOrder()
                 ->limit(4)
                 ->get();
         }
 
-        // Si pregunta en general qué vendemos, catálogo, ofertas o packs, devolver destacados con stock
-        if (preg_match('/\b(catalogo|productos|que tenes|que tienen|que venden|oferta|ofertas|pack|packs|bulto|bultos|caja|cajas|precio|precios|stock|recomienda|recomendame)\b/u', $normalizado)) {
+        // Si pregunta en general qué vendemos, catálogo, ofertas o packs, devolver variados con stock
+        if (preg_match('/\b(catalogo|productos|que tenes|que tienen|que venden|oferta|ofertas|pack|packs|bulto|bultos|caja|cajas|precio|precios|stock|recomienda|recomendame|mas|otros|otras)\b/u', $normalizado)) {
             return (clone $queryBase)
                 ->where('stock_actual', '>', 0)
-                ->orderByDesc('stock_actual')
+                ->inRandomOrder()
                 ->limit(4)
                 ->get();
         }
@@ -349,9 +362,60 @@ class ChatbotService
     }
 
     /**
+     * Obtiene todo el catálogo activo formateado para que Gemini conozca todos los productos reales.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function obtenerCatalogoCompletoFormateado(bool $isMayorista): array
+    {
+        $todos = Producto::with(['categoria', 'presentaciones'])
+            ->where('activo', true)
+            ->orderBy('categoria_id')
+            ->orderBy('nombre_producto')
+            ->limit(60)
+            ->get();
+
+        return $this->formatearTarjetasProductos($todos, $isMayorista);
+    }
+
+    /**
+     * Sincroniza las tarjetas interactivas mostradas debajo del mensaje con los productos que Gemini nombró en su texto.
+     *
+     * @param  array<int, array<string, mixed>>  $catalogoCompleto
+     * @param  array<int, array<string, mixed>>  $tarjetasActuales
+     * @return array<int, array<string, mixed>>
+     */
+    private function sincronizarTarjetasConRespuesta(string $respuestaTexto, array $catalogoCompleto, array $tarjetasActuales): array
+    {
+        $respuestaNorm = $this->normalizarTexto($respuestaTexto);
+        $coincidencias = [];
+
+        foreach ($catalogoCompleto as $item) {
+            $nombreNorm = $this->normalizarTexto((string) $item['nombre']);
+            // Verificar si el nombre completo o la parte después del guion ("Marca - Producto") aparece en la respuesta
+            $partesGuion = array_map('trim', explode('-', $nombreNorm));
+            $subNombre = count($partesGuion) > 1 ? end($partesGuion) : $nombreNorm;
+
+            if (
+                ($nombreNorm !== '' && str_contains($respuestaNorm, $nombreNorm)) ||
+                (is_string($subNombre) && mb_strlen($subNombre) >= 5 && str_contains($respuestaNorm, $subNombre))
+            ) {
+                $coincidencias[] = $item;
+            }
+
+            if (count($coincidencias) >= 4) {
+                break;
+            }
+        }
+
+        return ! empty($coincidencias) ? $coincidencias : $tarjetasActuales;
+    }
+
+    /**
      * Consulta la API de Google Gemini inyectando el contexto real del sistema.
      *
      * @param  array<int, array<string, mixed>>  $tarjetasProductos
+     * @param  array<int, array<string, mixed>>  $catalogoCompleto
      * @param  array<int, array<string, mixed>>  $tarjetasPedidos
      * @param  array<int, array{role: string, text: string}>  $historial
      */
@@ -360,6 +424,7 @@ class ChatbotService
         ?User $user,
         bool $isMayorista,
         array $tarjetasProductos,
+        array $catalogoCompleto,
         array $tarjetasPedidos,
         array $historial
     ): ?string {
@@ -370,7 +435,8 @@ class ChatbotService
             return null;
         }
 
-        $systemInstruction = $this->construirSystemPrompt($user, $isMayorista, $tarjetasProductos, $tarjetasPedidos);
+        $productosParaPrompt = ! empty($catalogoCompleto) ? $catalogoCompleto : $tarjetasProductos;
+        $systemInstruction = $this->construirSystemPrompt($user, $isMayorista, $productosParaPrompt, $tarjetasPedidos);
 
         $contents = [];
         foreach (array_slice($historial, -8) as $msg) {
@@ -399,7 +465,7 @@ class ChatbotService
             $endpoint = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}";
 
             try {
-                $httpClient = Http::acceptJson()->timeout(12);
+                $httpClient = Http::acceptJson()->timeout(15);
 
                 if (app()->environment('local', 'testing')) {
                     $httpClient = $httpClient->withoutVerifying();
@@ -411,8 +477,8 @@ class ChatbotService
                     ],
                     'contents' => $contents,
                     'generationConfig' => [
-                        'temperature' => 0.3,
-                        'maxOutputTokens' => 500,
+                        'temperature' => 0.4,
+                        'maxOutputTokens' => 2048,
                     ],
                 ]);
 
