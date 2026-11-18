@@ -31,7 +31,7 @@ class ProfileSecurityCodeMail extends Mailable
             subject: 'Código de seguridad para modificar tu perfil - HyK Mayorista',
             replyTo: [
                 new Address(
-                    config('mail.from.address', 'hykmayorista.soporte@gmail.com'),
+                    config('mail.from.address', 'hykcontacto1@gmail.com'),
                     config('mail.from.name', 'HyK Mayorista')
                 ),
             ],

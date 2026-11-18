@@ -55,23 +55,11 @@ class AppServiceProvider extends ServiceProvider
                     }
 
                     $from = $email->getFrom()[0] ?? null;
-                    $senderEmail = $from ? $from->getAddress() : (string) config('mail.from.address');
+                    $senderEmail = $from ? $from->getAddress() : (string) config('mail.from.address', 'hykcontacto1@gmail.com');
                     $senderName = ($from && $from->getName()) ? $from->getName() : (string) config('mail.from.name', 'HyK Mayorista');
 
-                    // Si el correo remitente es el genérico por defecto, obtener automáticamente el remitente verificado de Brevo
                     if ($senderEmail === '' || $senderEmail === 'hello@example.com') {
-                        $sendersResp = $httpClient->get('https://api.brevo.com/v3/senders');
-                        $activeSender = collect($sendersResp->json('senders', []))->firstWhere('active', true)
-                            ?? collect($sendersResp->json('senders', []))->first();
-
-                        if (! empty($activeSender['email'])) {
-                            $senderEmail = (string) $activeSender['email'];
-                        } else {
-                            $accountResp = $httpClient->get('https://api.brevo.com/v3/account');
-                            if (! empty($accountResp->json('email'))) {
-                                $senderEmail = (string) $accountResp->json('email');
-                            }
-                        }
+                        $senderEmail = 'hykcontacto1@gmail.com';
                     }
 
                     $to = [];
