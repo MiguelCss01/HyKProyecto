@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'log'),
+    'default' => env('MAIL_MAILER', env('BREVO_API_KEY') ? 'brevo' : 'log'),
 
     /*
     |--------------------------------------------------------------------------
@@ -63,6 +63,10 @@ return [
 
         'resend' => [
             'transport' => 'resend',
+        ],
+
+        'brevo' => [
+            'transport' => 'brevo',
         ],
 
         'sendmail' => [

@@ -48,6 +48,10 @@ return [
         'model' => env('GEMINI_MODEL', 'gemini-3.5-flash'),
     ],
 
+    'brevo' => [
+        'api_key' => env('BREVO_API_KEY', ''),
+    ],
+
     'hyk' => [
         'whatsapp' => env('HYK_WHATSAPP_NUMBER', '5493704000000'),
         'direccion' => 'Calle Saavedra 4600 (en intersección con Av. Circunvalación), Ciudad de Formosa',
